@@ -194,28 +194,6 @@ house.add(doorLight)
 /**
  * Particles
  */
-// const particlesCount = 500
-// const positions = new Float32Array(particlesCount * 3)
-
-// for (let i = 0; i < particlesCount; i++)
-// {
-//     const i3 = i * 3
-//     positions[i3     ] = (Math.random() - 0.5) * 20
-//     positions[i3 + 1 ] = Math.random() * 5 + 1
-//     positions[i3 + 2 ] = (Math.random() - 0.5) * 20
-// }
-
-// const particlesGeometry = new THREE.BufferGeometry()
-// particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
-
-// const particlesMaterial = new THREE.PointsMaterial({
-//     color: '#ffffff',
-//     size: 0.05,
-//     sizeAttenuation: true
-// })
-
-// const particles = new THREE.Points(particlesGeometry, particlesMaterial)
-// scene.add(particles)
 const starCount = 5000
 const starGeometry = new THREE.BufferGeometry()
 const starPositions = new Float32Array(starCount * 3)
@@ -275,7 +253,6 @@ fontLoader.load('/fonts/helvetiker_regular.typeface.json', (font) => {
 
     const textMaterial = new THREE.MeshStandardMaterial({
         color: 0xccccff,
-        // width: 4,
         transparent: true,
         opacity: 0.7,
         emissive: 0xaaaaff,
@@ -283,72 +260,11 @@ fontLoader.load('/fonts/helvetiker_regular.typeface.json', (font) => {
     })
 
     ghostText = new THREE.Mesh(textGeometry, textMaterial)
-    ghostText.position.set(0, 6, 2)
-    scene.add(ghostText)
-
+    ghostText.position.set(2, 6, 28)
     scene.add(ghostText)
 }
 )
- 
-/**
- * Galaxy
- */
 
-// const galaxyParameters = {
-//     count: 8000,
-//     radius: 30,
-//     branches: 6,
-//     spin: 0.3,
-//     randomness: 3,
-//     randomnessPower: 2,
-//     insideColor: '#ffffff',
-//     outsideColor: '#8899ff' 
-// }
-
-// const galaxyGeometry = new THREE.BufferGeometry()
-// const galaxyPositions = new Float32Array(galaxyParameters.count * 3)
-// const galaxyColors = new Float32Array(galaxyParameters.count * 3)
-
-// const colorInside = new THREE.Color(galaxyParameters.insideColor)
-// const colorOutside = new THREE.Color(galaxyParameters.outsideColor)
-
-// for (let i = 0; i < galaxyParameters.count; i++){
-//     const i3 = i * 3
-
-//     const radius = Math.random() * galaxyParameters.radius
-//     const spinAngle = radius * galaxyParameters.spin
-//     const branchAngle = (i % galaxyParameters.branches) / galaxyParameters.branches * Math.PI * 2
-
-//     const randomX = Math.pow(Math.random(), galaxyParameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1) * galaxyParameters.randomness
-//     const randomY = Math.pow(Math.random(), galaxyParameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1) * galaxyParameters.randomness
-//     const randomZ = Math.pow(Math.random(), galaxyParameters.randomnessPower) * (Math.random() < 0.5 ? 1 : -1) * galaxyParameters.randomness
-
-//     galaxyPositions[i3] = Math.cos(branchAngle + spinAngle) * radius + randomX
-//     galaxyPositions[i3 + 1] = randomY
-//     galaxyPositions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ
-
-//     const mixedColor = colorInside.clone()
-//     mixedColor.lerp(colorOutside, radius / galaxyParameters.radius)
-
-//     galaxyColors[i3] = mixedColor.r
-//     galaxyColors[i3 + 1] = mixedColor.g
-//     galaxyColors[i3 + 2] = mixedColor.b
-// }
-
-// galaxyGeometry.setAttribute('position', new THREE.BufferAttribute(galaxyPositions, 3))
-// galaxyGeometry.setAttribute('color', new THREE.BufferAttribute(galaxyColors, 3))
-
-// const galaxyMaterial = new THREE.PointsMaterial({
-//     size: 0.02,
-//     sizeAttenuation: true,
-//     depthWrite: false,
-//     vertexColors: true,
-//     blending: THREE.AdditiveBlending
-// })
-
-// const galaxy = new THREE.Points(galaxyGeometry, galaxyMaterial)
-// galaxy.position.set(0, 10, -15)
-// scene.add(galaxy)
 
 /**
  * Sizes
@@ -386,9 +302,9 @@ window.addEventListener('resize', () =>
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.x = 4
-camera.position.y = 2
-camera.position.z = 5
+camera.position.x = 0
+camera.position.y = 3
+camera.position.z = 40
 scene.add(camera)
 
 // Controls
@@ -471,9 +387,8 @@ const tick = () =>
 
     // Update text
     if (ghostText) {
-        ghostText.position.y = 3 + Math.sin(elapsedTime * 2) * 0.3
-        ghostText.position.x = -1.5 + Math.sin(elapsedTime * 1.5) * 2
-        ghostText.material.opacity = 0.6 + Math.sin(elapsedTime * 3) * 0.2
+        ghostText.position.x = Math.sin(elapsedTime * 2) * 1.8 
+        ghostText.position.y = 2 + Math.cos(elapsedTime * 2) * 1.2
     }
 
     // Update controls
