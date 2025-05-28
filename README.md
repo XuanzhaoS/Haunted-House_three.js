@@ -14,6 +14,7 @@
 - GSAP(animation library)
 
 ## 📁Project Structure
+```
 Haunted-House_three.js/
 ├── /src
 |   └── index.html
@@ -30,6 +31,7 @@ Haunted-House_three.js/
 |   └── /grass
 |   └── /particles
 └── README.md
+```
 
 ## 🚀Getting Started
 - Install dependencies
