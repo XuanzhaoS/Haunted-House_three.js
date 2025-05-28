@@ -2,6 +2,15 @@
 
 > A 3D Haunted House project built with Three.js
 
+## Table of Contents
+- [Preview](#preview)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+- [Features](#features)
+- [Learning Resources](#learning-resources)
+- [Author](#️author)
+
 ## 📷 Preview
 ![Screenshot](./assets/screenshot.gif)
 [👉Live Demo](haunted-house-dusky-nine.vercel.app)
