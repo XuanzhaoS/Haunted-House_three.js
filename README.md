@@ -13,7 +13,7 @@
 
 ## 📷 Preview
 ![Screenshot](./assets/screenshot.gif)
-[👉Live Demo](haunted-house-dusky-nine.vercel.app)
+[👉Live Demo](https://haunted-house-three-js-steel.vercel.app/)
 
 ## Tech Stack
 - Three.js
