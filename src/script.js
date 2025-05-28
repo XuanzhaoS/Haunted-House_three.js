@@ -275,7 +275,7 @@ fontLoader.load('/fonts/helvetiker_regular.typeface.json', (font) => {
 
     const textMaterial = new THREE.MeshStandardMaterial({
         color: 0xccccff,
-        width: 4,
+        // width: 4,
         transparent: true,
         opacity: 0.7,
         emissive: 0xaaaaff,
