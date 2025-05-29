@@ -13,7 +13,7 @@ import { addHouseToScene } from "./scene/hauntedHouse";
 import { addEnvironmentToScene } from "./scene/environment";
 import { addLightsToScene } from "./lights/lighting";
 import { addParticlesToScene } from "./scene/particles";
-import { addWelcomTextToScene, updateWelcomeText } from "./ui/text";
+import { addWelcomTextToScene, updateWelcomeText } from "./ui/welcomeText";
 
 /**
  * Base

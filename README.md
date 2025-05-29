@@ -26,6 +26,19 @@
 ```
 Haunted-House_three.js/
 ├── /src
+|   └── lights
+|   |   └── lighting.js
+|   └── physics
+|   |   └── skulls.js
+|   └── scene
+|   |   └── bushes.js
+|   |   └── environment.js
+|   |   └── ghosts.js
+|   |   └── graveyard.js
+|   |   └── hauntedHouse.js
+|   |   └── particles.js
+|   └── ui
+|   |   └── welcomeText.js
 |   └── index.html
 |   └── script.js
 |   └── style.css
