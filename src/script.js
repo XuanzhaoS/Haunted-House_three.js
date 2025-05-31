@@ -2,10 +2,6 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { Timer } from "three/addons/misc/Timer.js";
 import GUI from "lil-gui";
-// import { all, bumpMap } from 'three/tsl'
-// import { Texture } from 'three/webgpu'
-// import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
-// import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import * as CANNON from 'cannon-es'
 import { addGhostsToScene, updateGhosts } from './scene/ghosts'
 import { addGraveyardToScene } from "./scene/graveyard";
@@ -14,7 +10,7 @@ import { addEnvironmentToScene } from "./scene/environment";
 import { addLightsToScene } from "./lights/lighting";
 import { addParticlesToScene } from "./scene/particles";
 import { addWelcomTextToScene, updateWelcomeText } from "./ui/welcomeText";
-
+import { bgm } from "./scene/bgm";
 /**
  * Base
  */
@@ -34,37 +30,11 @@ addLightsToScene(scene, gui)
 addParticlesToScene(scene)
 addWelcomTextToScene(scene)
 
-/**
- * Skull drops
- */
+const defaultMaterial = new CANNON.Material('default')
+
 const world = new CANNON.World()
 world.gravity.set(0, -9.82, 0)
 
-// Skull
-const skullBody = new CANNON.Body({
-    mass: 1,
-    shape: new CANNON.Sphere(0.2),
-    position: new CANNON.Vec3(2, 8, 2)
-})
-world.addBody(skullBody)
-
-const skullGeometry = new THREE.SphereGeometry(0.2, 16, 16)
-const skullMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff })
-
-const fallingSkull = new THREE.Mesh(skullGeometry, skullMaterial)
-fallingSkull.visible = false
-scene.add(fallingSkull)
-
-// Sound
-skullBody.addEventListener('collide', (event) => {
-    const impactStrength = event.contact.getImpactVelocityAlongNormal()
-
-    if(impactStrength > 1.5) {
-        skullSound.volume = Math.random()
-        skullSound.currentTime = 0
-        skullSound.play()
-    }
-})
 
 /**
  * Sizes
@@ -123,11 +93,29 @@ renderer.setClearColor("#262827");
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
+/**
+ * Sound
+ */
+window.addEventListener('load', () => {
+  bgm('sounds/classiGhostSound.mp3');
+});
+
+const audio = new Audio('sounds/classiGhostSound.mp3')
+audio.loop = true 
+
+let audioStarted = false
+
+window.addEventListener('wheel', () => {
+  if (!audioStarted) {
+    audio.play()
+    audioStarted = true
+  }
+})
+
 /*4
  *4Animate
  */
 const timer = new Timer();
-let skullDropTriggered = false
 
 const tick = () => {
   // Timer
@@ -136,21 +124,6 @@ const tick = () => {
 
   // Update ghosts
   updateGhosts(elapsedTime)
-
-  // Update skull sound
-  world.step(1 / 60)
-
-  if (fallingSkull.visible) {
-    world.step(1/60)
-    fallingSkull.position.copy(skullBody.position)
-  }
-
-  // if (!skullDropTriggered && camera.position.distanceTo(ghost3.position) < 10) {
-  //   skullDropTriggered = true
-  //   fallingSkull.visible = true
-  //   skullBody.position.set(2, 8, 2)
-  //   skullBody.velocity.set(0, 0, 0)
-  // }
 
   // Update text
   updateWelcomeText(elapsedTime)
