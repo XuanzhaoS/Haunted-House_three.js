@@ -101,7 +101,7 @@ audio.loop = true
 
 let audioStarted = false
 
-window.addEventListener('wheel', () => {
+window.addEventListener('click', () => {
   if (!audioStarted) {
     audio.play()
     audioStarted = true
