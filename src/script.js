@@ -96,16 +96,12 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 /**
  * Sound
  */
-window.addEventListener('load', () => {
-  bgm('sounds/classiGhostSound.mp3');
-});
-
 const audio = new Audio('sounds/classiGhostSound.mp3')
 audio.loop = true 
 
 let audioStarted = false
 
-window.addEventListener('wheel', () => {
+window.addEventListener('click', () => {
   if (!audioStarted) {
     audio.play()
     audioStarted = true
