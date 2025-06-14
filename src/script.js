@@ -24,17 +24,18 @@ const canvas = document.querySelector("canvas.webgl");
 const scene = new THREE.Scene();
 addGhostsToScene(scene)
 addGraveyardToScene(scene)
-addHouseToScene(scene)
 addEnvironmentToScene(scene)
 addLightsToScene(scene, gui)
 addParticlesToScene(scene)
 addWelcomTextToScene(scene)
 
+const houseInfo = addHouseToScene(scene)
+// const doorMixer = houseInfo.doorMixer
+
 const defaultMaterial = new CANNON.Material('default')
 
 const world = new CANNON.World()
 world.gravity.set(0, -9.82, 0)
-
 
 /**
  * Sizes
@@ -111,12 +112,21 @@ window.addEventListener('click', () => {
 /*4
  *4Animate
  */
+
 const timer = new Timer();
+const clock = new THREE.Clock();
 
 const tick = () => {
   // Timer
   timer.update();
   const elapsedTime = timer.getElapsed();
+  const deltaTime = clock.getDelta();
+
+  // Update door
+  const mixer = houseInfo.doorMixer
+  if (mixer) {
+    mixer.update(deltaTime)
+  }
 
   // Update ghosts
   updateGhosts(elapsedTime)
