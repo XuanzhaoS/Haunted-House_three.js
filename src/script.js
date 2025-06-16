@@ -27,13 +27,13 @@ const world = new CANNON.World()
 world.gravity.set(0, -9.82, 0)
 
 addGhostsToScene(scene)
-addGraveyardToScene(scene)
+addGraveyardToScene(scene, world)
 addEnvironmentToScene(scene, world)
 addLightsToScene(scene, gui)
 addParticlesToScene(scene)
 addWelcomTextToScene(scene)
 
-const houseInfo = addHouseToScene(scene)
+const houseInfo = addHouseToScene(scene, world)
 
 const defaultMaterial = new CANNON.Material('default')
 
@@ -70,7 +70,7 @@ const camera = new THREE.PerspectiveCamera(
   100
 );
 camera.position.x = 0;
-camera.position.y = 15;
+camera.position.y = 3;
 camera.position.z = 40;
 scene.add(camera);
 

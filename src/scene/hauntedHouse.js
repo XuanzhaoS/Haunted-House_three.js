@@ -2,21 +2,38 @@ import * as THREE from 'three'
 import { addBushesToScene } from "./bushes";
 import { loadDoorModel } from './loadDoorModel';
 
-export function addHouseToScene(scene) {
+export function addHouseToScene(scene, world) {
 
     // Group
     const house = new THREE.Group();
 
     // Texture
-    // const textureLoader = new THREE.TextureLoader();
+    const textureLoader = new THREE.TextureLoader();
 
     // Walls
+    const wallTexture = textureLoader.load('/brick/color.jpg')
     const walls = new THREE.Mesh(
         new THREE.BoxGeometry(4, 2.5, 4),
-        new THREE.MeshStandardMaterial({ color: "#ac8e82" })
+        new THREE.MeshStandardMaterial({ map: wallTexture })
     );
     walls.position.y = 1.25;
     house.add(walls);
+
+    // Floor
+    const floorTexture = textureLoader.load('/grass/color.jpg')
+    floorTexture.wrapS = THREE.RepeatWrapping
+    floorTexture.wrapT = THREE.RepeatWrapping
+    floorTexture.repeat.set(4, 4)
+
+    const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(6, 6),
+    new THREE.MeshStandardMaterial({ map: floorTexture })
+    )
+    floor.rotation.x = -Math.PI / 2
+    floor.position.y = 0 
+    floor.receiveShadow = true
+
+    house.add(floor)
 
     // Roof
     const roof = new THREE.Mesh(
@@ -25,6 +42,7 @@ export function addHouseToScene(scene) {
     );
     roof.position.y = 3;
     roof.rotation.y = Math.PI / 4;
+
     house.add(roof);
 
     // Door
@@ -49,7 +67,7 @@ export function addHouseToScene(scene) {
     doorLight.shadow.mapSize.height = 256;
     doorLight.shadow.camera.far = 7;
 
-    addBushesToScene(house)
+    addBushesToScene(house, world)
 
     scene.add(house);
 

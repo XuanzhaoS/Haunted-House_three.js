@@ -1,6 +1,7 @@
 import * as THREE from 'three'
+import * as CANNON from 'cannon-es'
 
-export function addGraveyardToScene(scene) {
+export function addGraveyardToScene(scene, world) {
 
     const graves = new THREE.Group();
 
@@ -19,6 +20,15 @@ export function addGraveyardToScene(scene) {
         grave.rotation.z = (Math.random() - 0.5) * 0.4;
         grave.castShadow = true;
         graves.add(grave);
+
+        // Add physics
+        const shape = new CANNON.Box(new CANNON.Vec3(0.3, 0.4, 0.1)) 
+        const body = new CANNON.Body({
+            mass: 0,
+            shape: shape,
+            position: new CANNON.Vec3(x, 0.4, z)
+        })
+        world.addBody(body)
     }
 
     scene.add(graves);
