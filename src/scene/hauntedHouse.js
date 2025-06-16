@@ -55,6 +55,14 @@ export function addHouseToScene(scene, world) {
 
     house.add(roof);
 
+    const roofShape = new CANNON.Box(new CANNON.Vec3(2, 0.5, 2)); 
+    const roofBody = new CANNON.Body({
+    shape: roofShape,
+    type: CANNON.Body.STATIC,
+    position: new CANNON.Vec3(0, 3, 0)
+    });
+    world.addBody(roofBody);
+
     // Door
     let doorMixer = null;
 
