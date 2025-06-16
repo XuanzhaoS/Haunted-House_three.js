@@ -22,20 +22,20 @@ const canvas = document.querySelector("canvas.webgl");
 
 // Scene
 const scene = new THREE.Scene();
+
+const world = new CANNON.World()
+world.gravity.set(0, -9.82, 0)
+
 addGhostsToScene(scene)
 addGraveyardToScene(scene)
-addEnvironmentToScene(scene)
+addEnvironmentToScene(scene, world)
 addLightsToScene(scene, gui)
 addParticlesToScene(scene)
 addWelcomTextToScene(scene)
 
 const houseInfo = addHouseToScene(scene)
-// const doorMixer = houseInfo.doorMixer
 
 const defaultMaterial = new CANNON.Material('default')
-
-const world = new CANNON.World()
-world.gravity.set(0, -9.82, 0)
 
 /**
  * Sizes
@@ -70,9 +70,11 @@ const camera = new THREE.PerspectiveCamera(
   100
 );
 camera.position.x = 0;
-camera.position.y = 3;
+camera.position.y = 15;
 camera.position.z = 40;
 scene.add(camera);
+
+// camera.lookAt(0, 10, 0)
 
 // Controls
 const controls = new OrbitControls(camera, canvas);

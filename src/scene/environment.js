@@ -1,6 +1,7 @@
 import * as THREE from 'three'
+import * as CANNON from 'cannon-es'
 
-export function addEnvironmentToScene(scene) {
+export function addEnvironmentToScene(scene, world) {
 
     // Texture
     const textureLoader = new THREE.TextureLoader();
@@ -51,4 +52,15 @@ export function addEnvironmentToScene(scene) {
     scene.fog = new THREE.Fog("#262837", 1, 15);
     
     scene.add(floor);
+
+    // Physics floor
+    const floorShape = new CANNON.Plane()
+    const floorBody = new CANNON.Body(
+        {
+            mass: 0,
+            shape: floorShape,
+        }
+    )
+    floorBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0)
+    world.addBody(floorBody)
 }

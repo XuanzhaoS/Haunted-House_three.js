@@ -31,7 +31,7 @@ export function addHouseToScene(scene) {
     let doorMixer = null;
 
     loadDoorModel(house, (door, mixer, animations) => {
-        door.position.set(0, 0, 2.01);
+        door.position.set(0, 0, 2.02);
         const action = mixer.clipAction(animations[0])
         action.play()
         doorMixer = mixer;
