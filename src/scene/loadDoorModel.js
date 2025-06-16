@@ -1,7 +1,8 @@
 import * as THREE from 'three'
+import * as CANNON from 'cannon-es'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
-export const loadDoorModel = (scene, onLoaded) => {
+export const loadDoorModel = (scene, onLoaded, world) => {
   const gltfLoader = new GLTFLoader()
   gltfLoader.load(
     '/door/door_wood/door.gltf',
@@ -14,6 +15,17 @@ export const loadDoorModel = (scene, onLoaded) => {
 
       const mixer = new THREE.AnimationMixer(door)
       const animations = gltf.animations
+
+      // Add physics
+      if (world) {
+        const doorShape = new CANNON.Box(new CANNON.Vec3(0.5, 1, 0.05))
+        const doorBody = new CANNON.Body({
+          shape: doorShape,
+          type: CANNON.Body.STATIC,
+          position: new CANNON.Vec3(5, 1, 0)
+        })
+        world.addBody(doorBody)
+      }
 
       if (onLoaded) {
         onLoaded(door, mixer, animations)

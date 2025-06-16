@@ -71,7 +71,7 @@ export function addHouseToScene(scene, world) {
         const action = mixer.clipAction(animations[0])
         action.play()
         doorMixer = mixer;
-    });
+    }, world);
 
     // Door light
     const doorLight = new THREE.PointLight("#ff7d46", 1, 7);

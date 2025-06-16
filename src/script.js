@@ -111,6 +111,42 @@ window.addEventListener('click', () => {
   }
 })
 
+// Test
+const radius = 0.3
+
+// 物理球体
+const sphereShape = new CANNON.Sphere(radius)
+const sphereBody = new CANNON.Body({
+  mass: 1,
+  shape: sphereShape,
+  position: new CANNON.Vec3(0, 5, 0) // 从空中5米高处掉落
+})
+world.addBody(sphereBody)
+
+// Three.js 球体
+const sphereGeometry = new THREE.SphereGeometry(radius, 32, 32)
+const sphereMaterial = new THREE.MeshStandardMaterial({ color: 'red' })
+const sphereMesh = new THREE.Mesh(sphereGeometry, sphereMaterial)
+sphereMesh.castShadow = true
+scene.add(sphereMesh)
+
+// 在动画循环里同步物理体和网格位置
+function animate() {
+  requestAnimationFrame(animate)
+
+  // 更新物理世界
+  world.step(1/60)
+
+  // 同步 Three.js 球的位置
+  sphereMesh.position.copy(sphereBody.position)
+  sphereMesh.quaternion.copy(sphereBody.quaternion)
+
+  // 渲染场景...
+  renderer.render(scene, camera)
+}
+
+animate()
+
 /*4
  *4Animate
  */
