@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import * as CANNON from 'cannon-es'
 import { addBushesToScene } from "./bushes";
 import { loadDoorModel } from './loadDoorModel';
 
@@ -11,7 +12,7 @@ export function addHouseToScene(scene, world) {
     const textureLoader = new THREE.TextureLoader();
 
     // Walls
-    const wallTexture = textureLoader.load('/brick/color.jpg')
+    const wallTexture = textureLoader.load('/brick/bricks.jpg')
     const walls = new THREE.Mesh(
         new THREE.BoxGeometry(4, 2.5, 4),
         new THREE.MeshStandardMaterial({ map: wallTexture })
@@ -19,8 +20,17 @@ export function addHouseToScene(scene, world) {
     walls.position.y = 1.25;
     house.add(walls);
 
+    // Add physics to walls
+    const wallShape = new CANNON.Box(new CANNON.Vec3(2, 1.25, 2)); // BoxGeometry(4, 2.5, 4)
+    const wallBody = new CANNON.Body({
+        shape: wallShape,
+        type: CANNON.Body.STATIC,
+        position: new CANNON.Vec3(0, 1.25, 0)
+    });
+    world.addBody(wallBody);
+
     // Floor
-    const floorTexture = textureLoader.load('/grass/color.jpg')
+    const floorTexture = textureLoader.load('/floor/woodFloor.jpg')
     floorTexture.wrapS = THREE.RepeatWrapping
     floorTexture.wrapT = THREE.RepeatWrapping
     floorTexture.repeat.set(4, 4)
