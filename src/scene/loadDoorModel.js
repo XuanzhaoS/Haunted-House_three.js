@@ -9,7 +9,7 @@ export const loadDoorModel = (scene, onLoaded, world) => {
     (gltf) => {
       const door = gltf.scene
       door.position.set(5, 0, 0); 
-      door.scale.set(0.5, 0.5, 0.5)
+      door.scale.set(0.75, 0.55, 0.8)
 
       scene.add(door)
 
@@ -18,7 +18,7 @@ export const loadDoorModel = (scene, onLoaded, world) => {
 
       // Add physics
       if (world) {
-        const doorShape = new CANNON.Box(new CANNON.Vec3(0.5, 1, 0.05))
+        const doorShape = new CANNON.Box(new CANNON.Vec3(1, 1, 0.05))
         const doorBody = new CANNON.Body({
           shape: doorShape,
           type: CANNON.Body.STATIC,

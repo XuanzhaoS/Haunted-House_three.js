@@ -2,6 +2,7 @@ import * as THREE from "three";
 import * as CANNON from "cannon-es";
 import { addBushesToScene } from "./bushes";
 import { loadDoorModel } from "./loadDoorModel";
+import { createWalls } from "./walls";
 
 export function addHouseToScene(scene, world) {
   // Group
@@ -9,24 +10,10 @@ export function addHouseToScene(scene, world) {
 
   // Texture
   const textureLoader = new THREE.TextureLoader();
-
-  // Walls
   const wallTexture = textureLoader.load("/brick/bricks.jpg");
-  const walls = new THREE.Mesh(
-    new THREE.BoxGeometry(4, 2.5, 4),
-    new THREE.MeshStandardMaterial({ map: wallTexture })
-  );
-  walls.position.y = 1.25;
-  house.add(walls);
 
-  // Add physics to walls
-  const wallShape = new CANNON.Box(new CANNON.Vec3(2, 1.25, 2)); // BoxGeometry(4, 2.5, 4)
-  const wallBody = new CANNON.Body({
-    shape: wallShape,
-    type: CANNON.Body.STATIC,
-    position: new CANNON.Vec3(0, 1.25, 0),
-  });
-  world.addBody(wallBody);
+  // Create walls
+  const walls = createWalls(house, world, wallTexture);
 
   // Floor
   const floorTexture = textureLoader.load("/floor/woodFloor.jpg");
@@ -41,7 +28,6 @@ export function addHouseToScene(scene, world) {
   floor.rotation.x = -Math.PI / 2;
   floor.position.y = 0.01;
   floor.receiveShadow = true;
-
   house.add(floor);
 
   // Roof
@@ -51,7 +37,6 @@ export function addHouseToScene(scene, world) {
   );
   roof.position.y = 3;
   roof.rotation.y = Math.PI / 4;
-
   house.add(roof);
 
   const roofShape = new CANNON.Box(new CANNON.Vec3(2, 0.5, 2));
@@ -70,9 +55,6 @@ export function addHouseToScene(scene, world) {
     house,
     (door, mixer, animations) => {
       door.position.set(0, 0, 2.02);
-      // Door animation
-      const action = mixer.clipAction(animations[0])
-      action.play()
       doorModel = door;
       doorMixer = mixer;
     },
@@ -81,10 +63,10 @@ export function addHouseToScene(scene, world) {
 
   // FakeDoor
   const fakeDoor = new THREE.Mesh(
-    new THREE.BoxGeometry(1, 3, 0.1),
+    new THREE.BoxGeometry(1, 1.6, 0.05),
     new THREE.MeshBasicMaterial({ color: 0xff0000, visible: false })
   );
-  fakeDoor.position.set(0, 0, 2.02);
+  fakeDoor.position.set(0, 0.8, 2.02);
   house.add(fakeDoor);
 
   // Door light
@@ -93,7 +75,9 @@ export function addHouseToScene(scene, world) {
   house.add(doorLight);
 
   // Shadow
-  walls.castShadow = true;
+  Object.values(walls.meshes).forEach((wall) => {
+    wall.castShadow = true;
+  });
   doorLight.castShadow = true;
   doorLight.shadow.mapSize.width = 256;
   doorLight.shadow.mapSize.height = 256;

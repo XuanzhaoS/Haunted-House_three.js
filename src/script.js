@@ -118,15 +118,25 @@ window.addEventListener("click", () => {
         houseInfo.doorModel.animations[0]
       );
 
+      // Animation transition
+      action.setLoop(THREE.LoopOnce);
+      action.clampWhenFinished = true;
+
+      // Reverse the animation
       if (action.isRunning()) {
         action.paused = false;
         action.timeScale = -1;
         action.play();
       } else {
+        // Play the animation
         action.paused = false;
         action.timeScale = 1;
         action.play();
       }
+
+      // Add animation transition
+      action.fadeIn(0.5);
+      action.fadeOut(0.5);
     }
   }
 });
@@ -192,7 +202,7 @@ const tick = () => {
 
   if (intersects.length > 0) {
     // Pointed to the door
-    doorLight.intensity = 3; 
+    doorLight.intensity = 3;
   } else {
     doorLight.intensity = 1;
   }
