@@ -34,7 +34,7 @@ addParticlesToScene(scene);
 addWelcomTextToScene(scene);
 
 const houseInfo = addHouseToScene(scene, world);
-let doorModel = houseInfo.doorModel;
+// let doorModel = houseInfo.doorModel;
 let doorLight = houseInfo.doorLight;
 
 /**
@@ -107,6 +107,28 @@ window.addEventListener("click", () => {
     audio.play();
     audioStarted = true;
   }
+
+  // Check if clicked on fakeDoor
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObject(houseInfo.fakeDoor);
+
+  if (intersects.length > 0) {
+    if (houseInfo.doorModel && houseInfo.doorMixer) {
+      const action = houseInfo.doorMixer.clipAction(
+        houseInfo.doorModel.animations[0]
+      );
+
+      if (action.isRunning()) {
+        action.paused = false;
+        action.timeScale = -1;
+        action.play();
+      } else {
+        action.paused = false;
+        action.timeScale = 1;
+        action.play();
+      }
+    }
+  }
 });
 
 /**
@@ -123,12 +145,12 @@ window.addEventListener("mousemove", (event) => {
 // Test
 const radius = 0.3;
 
-// 
+//
 const sphereShape = new CANNON.Sphere(radius);
 const sphereBody = new CANNON.Body({
   mass: 1,
   shape: sphereShape,
-  position: new CANNON.Vec3(0, 5, 0), 
+  position: new CANNON.Vec3(0, 5, 0),
 });
 world.addBody(sphereBody);
 
@@ -169,9 +191,15 @@ const tick = () => {
   const intersects = raycaster.intersectObject(houseInfo.fakeDoor);
 
   if (intersects.length > 0) {
+    // Pointed to the door
     doorLight.intensity = 3; 
   } else {
-    doorLight.intensity = 1; 
+    doorLight.intensity = 1;
+  }
+
+  // Update door animation
+  if (houseInfo.doorMixer) {
+    houseInfo.doorMixer.update(deltaTime);
   }
 
   // Update ghosts
