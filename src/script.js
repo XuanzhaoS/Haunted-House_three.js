@@ -2,8 +2,8 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { Timer } from "three/addons/misc/Timer.js";
 import GUI from "lil-gui";
-import * as CANNON from 'cannon-es'
-import { addGhostsToScene, updateGhosts } from './scene/ghosts'
+import * as CANNON from "cannon-es";
+import { addGhostsToScene, updateGhosts } from "./scene/ghosts";
 import { addGraveyardToScene } from "./scene/graveyard";
 import { addHouseToScene } from "./scene/hauntedHouse";
 import { addEnvironmentToScene } from "./scene/environment";
@@ -23,19 +23,19 @@ const canvas = document.querySelector("canvas.webgl");
 // Scene
 const scene = new THREE.Scene();
 
-const world = new CANNON.World()
-world.gravity.set(0, -9.82, 0)
+const world = new CANNON.World();
+world.gravity.set(0, -9.82, 0);
 
-addGhostsToScene(scene)
-addGraveyardToScene(scene, world)
-addEnvironmentToScene(scene, world)
-addLightsToScene(scene, gui)
-addParticlesToScene(scene)
-addWelcomTextToScene(scene)
+addGhostsToScene(scene);
+addGraveyardToScene(scene, world);
+addEnvironmentToScene(scene, world);
+addLightsToScene(scene, gui);
+addParticlesToScene(scene);
+addWelcomTextToScene(scene);
 
-const houseInfo = addHouseToScene(scene, world)
-
-const defaultMaterial = new CANNON.Material('default')
+const houseInfo = addHouseToScene(scene, world);
+let doorModel = houseInfo.doorModel;
+let doorLight = houseInfo.doorLight;
 
 /**
  * Sizes
@@ -74,8 +74,6 @@ camera.position.y = 3;
 camera.position.z = 40;
 scene.add(camera);
 
-// camera.lookAt(0, 10, 0)
-
 // Controls
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
@@ -99,55 +97,61 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 /**
  * Sound
  */
-const audio = new Audio('sounds/classiGhostSound.mp3')
-audio.loop = true 
+const audio = new Audio("sounds/classiGhostSound.mp3");
+audio.loop = true;
 
-let audioStarted = false
+let audioStarted = false;
 
-window.addEventListener('click', () => {
+window.addEventListener("click", () => {
   if (!audioStarted) {
-    audio.play()
-    audioStarted = true
+    audio.play();
+    audioStarted = true;
   }
-})
+});
+
+/**
+ * Mouse
+ */
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+window.addEventListener("mousemove", (event) => {
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+});
 
 // Test
-const radius = 0.3
+const radius = 0.3;
 
-// 物理球体
-const sphereShape = new CANNON.Sphere(radius)
+// 
+const sphereShape = new CANNON.Sphere(radius);
 const sphereBody = new CANNON.Body({
   mass: 1,
   shape: sphereShape,
-  position: new CANNON.Vec3(0, 5, 0) // 从空中5米高处掉落
-})
-world.addBody(sphereBody)
+  position: new CANNON.Vec3(0, 5, 0), 
+});
+world.addBody(sphereBody);
 
-// Three.js 球体
-const sphereGeometry = new THREE.SphereGeometry(radius, 32, 32)
-const sphereMaterial = new THREE.MeshStandardMaterial({ color: 'red' })
-const sphereMesh = new THREE.Mesh(sphereGeometry, sphereMaterial)
-sphereMesh.castShadow = true
-scene.add(sphereMesh)
+const sphereGeometry = new THREE.SphereGeometry(radius, 32, 32);
+const sphereMaterial = new THREE.MeshStandardMaterial({ color: "red" });
+const sphereMesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
+sphereMesh.castShadow = true;
+scene.add(sphereMesh);
 
-// 在动画循环里同步物理体和网格位置
 function animate() {
-  requestAnimationFrame(animate)
+  requestAnimationFrame(animate);
 
-  // 更新物理世界
-  world.step(1/60)
+  world.step(1 / 60);
 
-  // 同步 Three.js 球的位置
-  sphereMesh.position.copy(sphereBody.position)
-  sphereMesh.quaternion.copy(sphereBody.quaternion)
+  sphereMesh.position.copy(sphereBody.position);
+  sphereMesh.quaternion.copy(sphereBody.quaternion);
 
-  // 渲染场景...
-  renderer.render(scene, camera)
+  renderer.render(scene, camera);
 }
 
-animate()
+animate();
 
-/*4
+/*
  *4Animate
  */
 
@@ -161,16 +165,20 @@ const tick = () => {
   const deltaTime = clock.getDelta();
 
   // Update door
-  const mixer = houseInfo.doorMixer
-  if (mixer) {
-    mixer.update(deltaTime)
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObject(houseInfo.fakeDoor);
+
+  if (intersects.length > 0) {
+    doorLight.intensity = 3; 
+  } else {
+    doorLight.intensity = 1; 
   }
 
   // Update ghosts
-  updateGhosts(elapsedTime)
+  updateGhosts(elapsedTime);
 
   // Update text
-  updateWelcomeText(elapsedTime)
+  updateWelcomeText(elapsedTime);
 
   // Update controls
   controls.update();
