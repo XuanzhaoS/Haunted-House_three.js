@@ -2,14 +2,7 @@ import * as THREE from "three";
 import * as CANNON from "cannon-es";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 
-export function addEnvironmentToScene(scene, world) {
-  // Add HDR environment map
-  const rgbeLoader = new RGBELoader();
-  rgbeLoader.load("/env/satara_night_no_lamps.hdr", (texture) => {
-    texture.mapping = THREE.EquirectangularReflectionMapping;
-    scene.background = texture; // Set as scene background
-    scene.environment = texture; // Set as PBR material environment map
-  });
+export function addEnvironmentToGroup(group, world, renderer) {
 
   // Texture
   const textureLoader = new THREE.TextureLoader();
@@ -57,9 +50,9 @@ export function addEnvironmentToScene(scene, world) {
   floor.receiveShadow = true;
 
   // fog
-  scene.fog = new THREE.Fog("#262837", 1, 15);
-
-  scene.add(floor);
+  group.fogColor = "#262837"; 
+  group.fogNear = 1;
+  group.fogFar = 15;
 
   // Physics floor
   const floorShape = new CANNON.Plane();
@@ -69,4 +62,6 @@ export function addEnvironmentToScene(scene, world) {
   });
   floorBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
   world.addBody(floorBody);
+
+  group.add(floor);
 }
