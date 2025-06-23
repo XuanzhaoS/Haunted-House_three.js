@@ -5,7 +5,8 @@ import * as CANNON from "cannon-es";
 import { addLightsToScene } from "./HauntedHouseLand/lights/lighting.js";
 import { HauntedHouseLand } from "./HauntedHouseLand/hauntedHouseLand.js";
 import { bgm } from "./HauntedHouseLand/scene/bgm.js";
-import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
+import { EXRLoader } from "three/examples/jsm/loaders/EXRLoader.js";
+import gsap from "gsap";
 
 /**
  * Base
@@ -34,7 +35,8 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   100
 );
-camera.position.set(8, 6, 18);
+camera.position.set(0, 5, 15);
+camera.lookAt(0, 0, 0);
 scene.add(camera);
 
 // Renderer
@@ -61,6 +63,10 @@ addLightsToScene(scene, gui);
 const hauntedHouseLand = new HauntedHouseLand(world, renderer);
 hauntedHouseLand.addToScene(scene);
 
+// land
+hauntedHouseLand.group.position.set(0, 0, 0);
+hauntedHouseLand.group.rotation.y = 0;
+
 // Resize handler
 window.addEventListener("resize", () => {
   sizes.width = window.innerWidth;
@@ -69,6 +75,36 @@ window.addEventListener("resize", () => {
   camera.updateProjectionMatrix();
   renderer.setSize(sizes.width, sizes.height);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+});
+
+document.addEventListener(
+  "click",
+  () => {
+    bgm("/sounds/classiGhostSound.mp3");
+  },
+  { once: true }
+);
+
+const exrLoader = new EXRLoader();
+exrLoader.load("/env/NightSkyHDRI001_1K-HDR.exr", (texture) => {
+  texture.mapping = THREE.EquirectangularReflectionMapping;
+  scene.background = texture;
+  scene.environment = texture;
+});
+
+// target position
+const targetPosition = new THREE.Vector3(0, 5, 20);
+const duration = 2;
+
+// use tween.js or gsap animation
+gsap.to(camera.position, {
+  x: targetPosition.x,
+  y: targetPosition.y,
+  z: targetPosition.z,
+  duration: duration,
+  onUpdate: () => {
+    camera.lookAt(0, 0, -5);
+  },
 });
 
 // Animation loop
@@ -85,18 +121,3 @@ const tick = () => {
   requestAnimationFrame(tick);
 };
 tick();
-
-document.addEventListener(
-  "click",
-  () => {
-    bgm("/sounds/classiGhostSound.mp3");
-  },
-  { once: true }
-);
-
-const rgbeLoader = new RGBELoader();
-rgbeLoader.load("/env/rogland_clear_night.hdr", (texture) => {
-  texture.mapping = THREE.EquirectangularReflectionMapping;
-  scene.background = texture;
-  scene.environment = texture;
-});

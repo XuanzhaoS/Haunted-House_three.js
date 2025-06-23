@@ -36,12 +36,10 @@ export class HauntedHouseLand {
     // 7. welcome text
     addWelcomTextToScene(this.group);
 
-    // 8. floor
-    // const floor = createFloor(world);
-    // this.group.add(floor);
-
     // 9. bgm
     // bgm("/sounds/classiGhostSound.mp3");
+
+    // this.group.position.set(0, 0, -30);
   }
 
   addToScene(scene) {
