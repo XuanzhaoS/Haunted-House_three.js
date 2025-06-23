@@ -93,7 +93,7 @@ exrLoader.load("/env/NightSkyHDRI001_1K-HDR.exr", (texture) => {
 });
 
 // target position
-const targetPosition = new THREE.Vector3(0, 5, 20);
+const targetPosition = new THREE.Vector3(0, 5, 50);
 const duration = 2;
 
 // use tween.js or gsap animation
@@ -103,7 +103,7 @@ gsap.to(camera.position, {
   z: targetPosition.z,
   duration: duration,
   onUpdate: () => {
-    camera.lookAt(0, 0, -5);
+    camera.lookAt(0, 3, 0);
   },
 });
 

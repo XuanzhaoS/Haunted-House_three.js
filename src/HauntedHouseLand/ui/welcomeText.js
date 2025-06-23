@@ -3,9 +3,9 @@ import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 
 let welcomeText = null;
-// let lastChangeTime = 0;
-// let nextChangeDelay = 1;
-let targetPos = new THREE.Vector3(0, 3, -6);
+let lastChangeTime = 0;
+let nextChangeDelay = 0.5;
+let targetPos = new THREE.Vector3(0, 3, 30);
 
 export function addWelcomTextToScene(scene) {
   const fontLoader = new FontLoader();
@@ -41,11 +41,17 @@ export function addWelcomTextToScene(scene) {
 export function updateWelcomeText(elapsedTime) {
   if (!welcomeText) return;
 
-  // drift
-  const x = Math.sin(elapsedTime * 0.5) * 4 + Math.sin(elapsedTime * 1.3) * 1.5;
-  const y = 3 + Math.cos(elapsedTime * 0.7) * 2;
-  const z = -10 + Math.cos(elapsedTime * 0.3) * 2;
-  welcomeText.position.set(x, y, z);
+  if (elapsedTime - lastChangeTime > nextChangeDelay) {
+    const x = (Math.random() - 0.5) * 8;
+    const y = 2 + Math.random() * 4;
+    const z = 20 + Math.random() * 20;
+    targetPos.set(x, y, z);
+
+    lastChangeTime = elapsedTime;
+    nextChangeDelay = 1 + Math.random() * 0.5;
+  }
+
+  welcomeText.position.lerp(targetPos, 0.05);
 
   // flicker
   welcomeText.material.opacity =
