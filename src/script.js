@@ -7,6 +7,7 @@ import { HauntedHouseLand } from "./HauntedHouseLand/hauntedHouseLand.js";
 import { bgm } from "./HauntedHouseLand/scene/bgm.js";
 import { EXRLoader } from "three/examples/jsm/loaders/EXRLoader.js";
 import gsap from "gsap";
+import { CarnivalLand } from "./AbandonedCarnivalLand/environment.js";
 
 /**
  * Base
@@ -52,16 +53,18 @@ renderer.shadowMap.enabled = true;
 // Controls
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
-
-// Environment (HDR, ground, fog, etc.)
-// addEnvironmentToScene(scene, world);
+controls.maxPolarAngle = Math.PI / 2.1;
 
 // Lights
 addLightsToScene(scene, gui);
 
 // HauntedHouseLand
-const hauntedHouseLand = new HauntedHouseLand(world, renderer);
-hauntedHouseLand.addToScene(scene);
+const hauntedHouseLand = new HauntedHouseLand(world);
+const carnivalLand = new CarnivalLand();
+
+// Current land
+let currentLand = hauntedHouseLand;
+currentLand.addToScene(scene);
 
 // land
 hauntedHouseLand.group.position.set(0, 0, 0);
@@ -107,17 +110,22 @@ gsap.to(camera.position, {
   },
 });
 
-// Animation loop
+// land switch function
+function switchToCarnivalLand() {
+  scene.remove(currentLand.group);
+  currentLand = carnivalLand;
+  currentLand.addToScene(scene);
+}
+
+window.switchToCarnivalLand = switchToCarnivalLand;
+
 const clock = new THREE.Clock();
-const tick = () => {
+function tick() {
   const elapsedTime = clock.getElapsedTime();
   const deltaTime = clock.getDelta();
-
-  // update hauntedHouseLand internal animation
-  hauntedHouseLand.update(elapsedTime, deltaTime);
-
+  currentLand.update(elapsedTime, deltaTime);
   controls.update();
   renderer.render(scene, camera);
   requestAnimationFrame(tick);
-};
+}
 tick();

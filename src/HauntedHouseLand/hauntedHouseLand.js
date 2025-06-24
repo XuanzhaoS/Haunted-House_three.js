@@ -8,7 +8,6 @@ import { addParticlesToScene } from "./scene/particles";
 import { addBushesToScene } from "./scene/bushes";
 import { addWelcomTextToScene, updateWelcomeText } from "./ui/welcomeText";
 import { addEnvironmentToGroup } from "./scene/environment";
-// import { bgm } from "./scene/bgm";
 
 export class HauntedHouseLand {
   constructor(world, renderer) {
