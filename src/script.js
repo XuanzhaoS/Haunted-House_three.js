@@ -8,6 +8,7 @@ import { bgm } from "./HauntedHouseLand/scene/bgm.js";
 import { EXRLoader } from "three/examples/jsm/loaders/EXRLoader.js";
 import gsap from "gsap";
 import { CarnivalLand } from "./AbandonedCarnivalLand/environment.js";
+import { addParticlesToScene } from "./HauntedHouseLand/scene/particles.js";
 
 /**
  * Base
@@ -120,11 +121,18 @@ function switchToCarnivalLand() {
 window.switchToCarnivalLand = switchToCarnivalLand;
 
 const clock = new THREE.Clock();
+const starField = addParticlesToScene(scene);
+
 function tick() {
   const elapsedTime = clock.getElapsedTime();
   const deltaTime = clock.getDelta();
   currentLand.update(elapsedTime, deltaTime);
   controls.update();
+  if (starField) {
+    const t = performance.now() * 0.001;
+    starField.material.opacity = 0.2 + 0.8 * Math.abs(Math.sin(t * 2));
+    starField.rotation.y += 0.0001;
+  }
   renderer.render(scene, camera);
   requestAnimationFrame(tick);
 }

@@ -6,8 +6,8 @@ export function addParticlesToScene(scene) {
   const starPositions = new Float32Array(starCount * 3);
   const starColors = new Float32Array(starCount * 3);
 
-  const arms = 4; 
-  const spin = 1.5; 
+  const arms = 4;
+  const spin = 1.5;
   for (let i = 0; i < starCount; i++) {
     const radius = Math.random() * 10 + 10;
     const theta = Math.acos(2 * Math.random() - 1); // [0, PI]
@@ -52,4 +52,5 @@ export function addParticlesToScene(scene) {
 
   const starField = new THREE.Points(starGeometry, starMaterial);
   scene.add(starField);
+  return starField;
 }
