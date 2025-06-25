@@ -3,12 +3,12 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import GUI from "lil-gui";
 import * as CANNON from "cannon-es";
 import { addLightsToScene } from "./HauntedHouseLand/lights/lighting.js";
-import { HauntedHouseLand } from "./HauntedHouseLand/hauntedHouseLand.js";
 import { bgm } from "./HauntedHouseLand/scene/bgm.js";
 import { EXRLoader } from "three/examples/jsm/loaders/EXRLoader.js";
 import gsap from "gsap";
+import { HauntedHouseLand } from "./HauntedHouseLand/hauntedHouseLand.js";
 import { CarnivalLand } from "./AbandonedCarnivalLand/environment.js";
-import { addParticlesToScene } from "./HauntedHouseLand/scene/particles.js";
+import { addParticlesToScene } from "./particles.js";
 
 /**
  * Base
@@ -37,7 +37,7 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   100
 );
-camera.position.set(0, 5, 15);
+camera.position.set(0, 15, 60);
 camera.lookAt(0, 0, 0);
 scene.add(camera);
 
@@ -56,20 +56,79 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.maxPolarAngle = Math.PI / 2.1;
 
+// skySphere
+let skySphere;
+const loader = new THREE.TextureLoader();
+loader.load("/env/NightSkyHDRI001_1K-HDR.exr", function (texture) {
+  const geometry = new THREE.SphereGeometry(100, 64, 64);
+  const material = new THREE.MeshBasicMaterial({
+    map: texture,
+    side: THREE.BackSide,
+  });
+  skySphere = new THREE.Mesh(geometry, material);
+  scene.add(skySphere);
+});
+
 // Lights
 addLightsToScene(scene, gui);
 
-// HauntedHouseLand
+// lands
 const hauntedHouseLand = new HauntedHouseLand(world);
+hauntedHouseLand.group.name = "hauntedHouse";
+
 const carnivalLand = new CarnivalLand();
+carnivalLand.group.name = "carnival";
 
-// Current land
-let currentLand = hauntedHouseLand;
-currentLand.addToScene(scene);
+hauntedHouseLand.addToScene(scene);
+carnivalLand.addToScene(scene);
 
-// land
-hauntedHouseLand.group.position.set(0, 0, 0);
+// galaxy particles
+const starField = addParticlesToScene(scene);
+
+// lands position
+hauntedHouseLand.group.position.set(-20, 0, 0);
 hauntedHouseLand.group.rotation.y = 0;
+carnivalLand.group.position.set(20, 0, 0);
+carnivalLand.group.rotation.y = 0;
+
+// OrbitControls 
+controls.minDistance = 10;
+controls.maxDistance = 60;
+
+// Raycaster to focus on land
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+window.addEventListener("click", (event) => {
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObjects(
+    [hauntedHouseLand.group, carnivalLand.group],
+    true
+  );
+  if (intersects.length > 0) {
+    let targetGroup = intersects[0].object;
+    while (targetGroup.parent && !targetGroup.name) {
+      targetGroup = targetGroup.parent;
+    }
+    if (targetGroup.name) {
+      focusOnLand(targetGroup);
+    }
+  }
+});
+function focusOnLand(landGroup) {
+  const target = new THREE.Vector3();
+  landGroup.getWorldPosition(target);
+  gsap.to(camera.position, {
+    x: target.x,
+    y: target.y + 5,
+    z: target.z + 15,
+    duration: 1.5,
+    onUpdate: () => {
+      camera.lookAt(target.x, target.y, target.z);
+    },
+  });
+}
 
 // Resize handler
 window.addEventListener("resize", () => {
@@ -111,22 +170,15 @@ gsap.to(camera.position, {
   },
 });
 
-// land switch function
-function switchToCarnivalLand() {
-  scene.remove(currentLand.group);
-  currentLand = carnivalLand;
-  currentLand.addToScene(scene);
-}
-
-window.switchToCarnivalLand = switchToCarnivalLand;
-
 const clock = new THREE.Clock();
-const starField = addParticlesToScene(scene);
 
 function tick() {
-  const elapsedTime = clock.getElapsedTime();
-  const deltaTime = clock.getDelta();
-  currentLand.update(elapsedTime, deltaTime);
+  if (skySphere) {
+    skySphere.position.copy(camera.position);
+    skySphere.rotation.y += 0.0001;
+  }
+  hauntedHouseLand.update(clock.getElapsedTime(), clock.getDelta());
+  carnivalLand.update(clock.getElapsedTime(), clock.getDelta());
   controls.update();
   if (starField) {
     const t = performance.now() * 0.001;

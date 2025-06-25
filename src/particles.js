@@ -8,10 +8,12 @@ export function addParticlesToScene(scene) {
 
   const arms = 4;
   const spin = 1.5;
+  const minRadius = 10;
+  const maxRadius = 20;
   for (let i = 0; i < starCount; i++) {
-    const radius = Math.random() * 10 + 10;
-    const theta = Math.acos(2 * Math.random() - 1); // [0, PI]
-    const phi = Math.random() * 2 * Math.PI; // [0, 2PI]
+    const radius = Math.random() * (maxRadius - minRadius) + minRadius;
+    const theta = Math.acos(2 * Math.random() - 1); 
+    const phi = Math.random() * 2 * Math.PI; 
 
     const x = radius * Math.sin(theta) * Math.cos(phi);
     const y = radius * Math.cos(theta);
@@ -21,9 +23,16 @@ export function addParticlesToScene(scene) {
     starPositions[i * 3 + 1] = y;
     starPositions[i * 3 + 2] = z;
 
-    const colorInside = new THREE.Color(0xffcc88);
-    const colorOutside = new THREE.Color(0x3366ff);
-    const color = colorInside.clone().lerp(colorOutside, radius / 20);
+    const colorA = new THREE.Color(0xffcc88); 
+    const colorB = new THREE.Color(0xffffff);
+    const colorC = new THREE.Color(0x3366ff); 
+    const t = (radius - minRadius) / (maxRadius - minRadius); // 归一化到0~1
+    let color;
+    if (t < 0.5) {
+      color = colorA.clone().lerp(colorB, t * 2);
+    } else {
+      color = colorB.clone().lerp(colorC, (t - 0.5) * 2);
+    }
     starColors[i * 3] = color.r;
     starColors[i * 3 + 1] = color.g;
     starColors[i * 3 + 2] = color.b;

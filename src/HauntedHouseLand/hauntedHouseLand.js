@@ -1,10 +1,9 @@
 import * as THREE from "three";
-import * as CANNON from "cannon-es";
-import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
+// import * as CANNON from "cannon-es";
+// import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 import { addHouseToScene } from "./scene/hauntedHouse";
 import { addGraveyardToScene } from "./scene/graveyard";
 import { addGhostsToScene, updateGhosts } from "./scene/ghosts";
-import { addParticlesToScene } from "./scene/particles";
 import { addBushesToScene } from "./scene/bushes";
 import { addWelcomTextToScene, updateWelcomeText } from "./ui/welcomeText";
 import { addEnvironmentToGroup } from "./scene/environment";
@@ -17,25 +16,22 @@ export class HauntedHouseLand {
     // environment and floor
     addEnvironmentToGroup(this.group, world, renderer);
 
-    // 2. house
+    // house
     this.objects.houseInfo = addHouseToScene(this.group, world);
 
-    // 3. graveyard
+    // graveyard
     addGraveyardToScene(this.group, world);
 
-    // 4. ghosts
+    // ghosts
     addGhostsToScene(this.group);
 
-    // 5. bushes
+    // bushes
     addBushesToScene(this.group, world);
 
-    // 6. particles
-    addParticlesToScene(this.group);
-
-    // 7. welcome text
+    // welcome text
     addWelcomTextToScene(this.group);
 
-    // 9. bgm
+    // bgm
     // bgm("/sounds/classiGhostSound.mp3");
 
     // this.group.position.set(0, 0, -30);
