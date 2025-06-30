@@ -3,7 +3,15 @@ import * as THREE from "three";
 // import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 import { addHouseToScene } from "./scene/hauntedHouse";
 import { addGraveyardToScene } from "./scene/graveyard";
-import { addGhostsToScene, updateGhosts } from "./scene/ghosts";
+import {
+  updateGhosts,
+  ghost1,
+  ghost1Mesh,
+  ghost2,
+  ghost2Mesh,
+  ghost3,
+  ghost3Mesh,
+} from "./scene/ghosts";
 import { addBushesToScene } from "./scene/bushes";
 import { addWelcomTextToScene, updateWelcomeText } from "./ui/welcomeText";
 import { addEnvironmentToGroup } from "./scene/environment";
@@ -23,7 +31,7 @@ export class HauntedHouseLand {
     addGraveyardToScene(this.group, world);
 
     // ghosts
-    addGhostsToScene(this.group);
+    this.group.add(ghost1, ghost1Mesh, ghost2, ghost2Mesh, ghost3, ghost3Mesh);
 
     // bushes
     addBushesToScene(this.group, world);
@@ -53,8 +61,13 @@ export class HauntedHouseLand {
   update(elapsedTime, deltaTime) {
     // update ghosts
     updateGhosts(elapsedTime);
+    ghost1Mesh.position.copy(ghost1.position);
+    ghost2Mesh.position.copy(ghost2.position);
+    ghost3Mesh.position.copy(ghost3.position);
+
     // update welcome text
     updateWelcomeText(elapsedTime);
+
     // update door animation
     if (this.objects.houseInfo.doorMixer) {
       this.objects.houseInfo.doorMixer.update(deltaTime);

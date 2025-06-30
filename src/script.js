@@ -9,6 +9,7 @@ import gsap from "gsap";
 import { HauntedHouseLand } from "./HauntedHouseLand/hauntedHouseLand.js";
 import { CarnivalLand } from "./AbandonedCarnivalLand/environment.js";
 import { addParticlesToScene } from "./particles.js";
+import { setupGhostGame } from "./HauntedHouseLand/game/ghostGame.js";
 
 /**
  * Base
@@ -91,13 +92,16 @@ hauntedHouseLand.group.rotation.y = 0;
 carnivalLand.group.position.set(20, 0, 0);
 carnivalLand.group.rotation.y = 0;
 
-// OrbitControls 
+// OrbitControls
 controls.minDistance = 10;
 controls.maxDistance = 60;
 
 // Raycaster to focus on land
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
+
+let currentFocusedLand = null;
+
 window.addEventListener("click", (event) => {
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -112,22 +116,35 @@ window.addEventListener("click", (event) => {
       targetGroup = targetGroup.parent;
     }
     if (targetGroup.name) {
-      focusOnLand(targetGroup);
+      if (currentFocusedLand !== targetGroup) {
+        focusOnLand(targetGroup);
+        currentFocusedLand = targetGroup;
+      }
     }
   }
 });
+
 function focusOnLand(landGroup) {
-  const target = new THREE.Vector3();
-  landGroup.getWorldPosition(target);
-  gsap.to(camera.position, {
-    x: target.x,
-    y: target.y + 5,
-    z: target.z + 15,
-    duration: 1.5,
-    onUpdate: () => {
-      camera.lookAt(target.x, target.y, target.z);
-    },
-  });
+  // get land's world center
+  const center = new THREE.Vector3();
+  landGroup.getWorldPosition(center);
+
+  // calculate camera position
+  const cameraOffset = new THREE.Vector3(0, 3, 12); // adjust as needed
+  const targetPosition = center.clone().add(cameraOffset);
+
+  // set camera position and look at
+  camera.position.copy(targetPosition);
+  camera.lookAt(center);
+
+  // set controls.target to land center
+  controls.target.copy(center);
+  controls.update();
+
+  // limit camera movement
+  controls.minDistance = 1;
+  controls.maxDistance = 10;
+  controls.enablePan = false;
 }
 
 // Resize handler
@@ -170,6 +187,10 @@ gsap.to(camera.position, {
   },
 });
 
+// Ghost Game
+setupGhostGame(camera, renderer);
+
+// Animation
 const clock = new THREE.Clock();
 
 function tick() {
