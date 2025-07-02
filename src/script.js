@@ -91,7 +91,7 @@ carnivalLand.addToScene(scene);
 const starField = addParticlesToScene(scene);
 
 // Add welcome text to the main scene
-addWelcomTextToScene(scene);
+addWelcomTextToScene(scene, camera);
 
 // lands position
 hauntedHouseLand.group.position.set(-20, 0, 0);

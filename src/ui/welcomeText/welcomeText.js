@@ -1,25 +1,24 @@
 import * as THREE from "three";
+import { TTFLoader } from "three/examples/jsm/loaders/TTFLoader.js";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 
 let welcomeText = null;
-let lastChangeTime = 0;
-let nextChangeDelay = 0.5;
-let targetPos = new THREE.Vector3(0, 3, 30);
+let camera = null;
+const offset = new THREE.Vector3(0, -0.5, -3); 
 
-export function addWelcomTextToScene(scene) {
+export function addWelcomTextToScene(scene, mainCamera) {
+  camera = mainCamera;
+  const ttfLoader = new TTFLoader();
   const fontLoader = new FontLoader();
-  fontLoader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
-    const textGeometry = new TextGeometry("Welcome on board", {
+  ttfLoader.load("/fonts/HobbyOfNight.ttf", (json) => {
+    const font = fontLoader.parse(json);
+    const textGeometry = new TextGeometry("Welcome on board !", {
       font: font,
       size: 0.3,
-      depth: 0.01,
+      depth: 0.005,
       curveSegments: 12,
-      bevelEnabled: true,
-      bevelThickness: 0.02,
-      bevelSize: 0.02,
-      bevelOffset: 0,
-      bevelSegments: 5,
+      bevelEnabled: false,
     });
 
     textGeometry.center();
@@ -27,31 +26,35 @@ export function addWelcomTextToScene(scene) {
     const textMaterial = new THREE.MeshStandardMaterial({
       color: 0xccccff,
       transparent: true,
-      opacity: 0.7,
+      opacity: 0.95,
       emissive: 0xaaaaff,
-      emissiveIntensity: 1,
+      emissiveIntensity: 2,
     });
 
     welcomeText = new THREE.Mesh(textGeometry, textMaterial);
-    welcomeText.position.copy(targetPos);
     scene.add(welcomeText);
   });
 }
 
 export function updateWelcomeText(elapsedTime) {
-  if (!welcomeText) return;
+  if (!welcomeText || !camera) return;
 
-  if (elapsedTime - lastChangeTime > nextChangeDelay) {
-    const x = (Math.random() - 0.5) * 8;
-    const y = 2 + Math.random() * 4;
-    const z = 20 + Math.random() * 20;
-    targetPos.set(x, y, z);
+  // Left-right oscillation (x), and up-down "spring clown" bounce (y)
+  const moveX = Math.sin(elapsedTime) * 2;
+  const bobY = Math.pow(Math.abs(Math.sin(elapsedTime * 2.5)), 1.5) * 1.2;
 
-    lastChangeTime = elapsedTime;
-    nextChangeDelay = 1 + Math.random() * 0.5;
-  }
-
-  welcomeText.position.lerp(targetPos, 0.05);
+  // Calculate position in front of camera
+  const camWorldPos = new THREE.Vector3();
+  camera.getWorldPosition(camWorldPos);
+  const camWorldQuat = new THREE.Quaternion();
+  camera.getWorldQuaternion(camWorldQuat);
+  const localOffset = offset.clone();
+  localOffset.x += moveX;
+  localOffset.y += bobY;
+  const worldOffset = localOffset.applyQuaternion(camWorldQuat);
+  welcomeText.position.copy(camWorldPos).add(worldOffset);
+  // Always face the camera
+  welcomeText.quaternion.copy(camWorldQuat);
 
   // flicker
   welcomeText.material.opacity =
