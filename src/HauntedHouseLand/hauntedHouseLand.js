@@ -13,7 +13,6 @@ import {
   ghost3Mesh,
 } from "./scene/ghosts";
 import { addBushesToScene } from "./scene/bushes";
-import { addWelcomTextToScene, updateWelcomeText } from "./ui/welcomeText";
 import { addEnvironmentToGroup } from "./scene/environment";
 
 export class HauntedHouseLand {
@@ -37,7 +36,7 @@ export class HauntedHouseLand {
     addBushesToScene(this.group, world);
 
     // welcome text
-    addWelcomTextToScene(this.group);
+    // addWelcomTextToScene(this.group);
 
     // bgm
     // bgm("/sounds/classiGhostSound.mp3");
@@ -66,7 +65,7 @@ export class HauntedHouseLand {
     ghost3Mesh.position.copy(ghost3.position);
 
     // update welcome text
-    updateWelcomeText(elapsedTime);
+    // updateWelcomeText(elapsedTime);
 
     // update door animation
     if (this.objects.houseInfo.doorMixer) {

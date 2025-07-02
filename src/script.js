@@ -8,8 +8,12 @@ import { EXRLoader } from "three/examples/jsm/loaders/EXRLoader.js";
 import gsap from "gsap";
 import { HauntedHouseLand } from "./HauntedHouseLand/hauntedHouseLand.js";
 import { CarnivalLand } from "./AbandonedCarnivalLand/environment.js";
-import { addParticlesToScene } from "./particles.js";
+import { addParticlesToScene } from "./ui/particles.js";
 import { setupGhostGame } from "./HauntedHouseLand/game/ghostGame.js";
+import {
+  addWelcomTextToScene,
+  updateWelcomeText,
+} from "./ui/welcomeText/welcomeText.js";
 
 /**
  * Base
@@ -85,6 +89,9 @@ carnivalLand.addToScene(scene);
 
 // galaxy particles
 const starField = addParticlesToScene(scene);
+
+// Add welcome text to the main scene
+addWelcomTextToScene(scene);
 
 // lands position
 hauntedHouseLand.group.position.set(-20, 0, 0);
@@ -206,6 +213,8 @@ function tick() {
     starField.material.opacity = 0.2 + 0.8 * Math.abs(Math.sin(t * 2));
     starField.rotation.y += 0.0001;
   }
+  // Update welcome text globally
+  updateWelcomeText(clock.getElapsedTime());
   renderer.render(scene, camera);
   requestAnimationFrame(tick);
 }

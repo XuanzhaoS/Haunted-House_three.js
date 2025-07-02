@@ -6,8 +6,6 @@ export function addParticlesToScene(scene) {
   const starPositions = new Float32Array(starCount * 3);
   const starColors = new Float32Array(starCount * 3);
 
-  const arms = 4;
-  const spin = 1.5;
   const minRadius = 10;
   const maxRadius = 20;
   for (let i = 0; i < starCount; i++) {
