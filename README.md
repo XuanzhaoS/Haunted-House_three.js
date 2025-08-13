@@ -32,8 +32,15 @@
 Haunted-House_three.js/
 ├── /src
 │ ├── AbandonedCarnivalLand/
-│ │ ├── environment.js
-│ │ └── scene/
+│ │ ├── carnivalLand.js          
+│ │ ├── scene/                   
+│ │  ├── environment.js       
+│ │  ├── carousel.js        
+│ │  └── ferrisWheel.js      
+│ │ ├── lights/                 
+│ │  └── lighting.js         
+│ │ ├── game/                    
+│    └── carnivalGame.js 
 │ ├── HauntedHouseLand/
 │ │ ├── game/
 │ │ │ ├── ghostGame.js

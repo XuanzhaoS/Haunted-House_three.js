@@ -1,17 +1,17 @@
 import * as THREE from "three";
 
 export function addParticlesToScene(scene) {
-  const starCount = 5000;
+  const starCount = 52500; 
   const starGeometry = new THREE.BufferGeometry();
   const starPositions = new Float32Array(starCount * 3);
   const starColors = new Float32Array(starCount * 3);
 
-  const minRadius = 10;
-  const maxRadius = 20;
+  const minRadius = 30;
+  const maxRadius = 90;
   for (let i = 0; i < starCount; i++) {
     const radius = Math.random() * (maxRadius - minRadius) + minRadius;
-    const theta = Math.acos(2 * Math.random() - 1); 
-    const phi = Math.random() * 2 * Math.PI; 
+    const theta = Math.acos(2 * Math.random() - 1);
+    const phi = Math.random() * 2 * Math.PI;
 
     const x = radius * Math.sin(theta) * Math.cos(phi);
     const y = radius * Math.cos(theta);
@@ -21,10 +21,10 @@ export function addParticlesToScene(scene) {
     starPositions[i * 3 + 1] = y;
     starPositions[i * 3 + 2] = z;
 
-    const colorA = new THREE.Color(0xffcc88); 
+    const colorA = new THREE.Color(0xffcc88);
     const colorB = new THREE.Color(0xffffff);
-    const colorC = new THREE.Color(0x3366ff); 
-    const t = (radius - minRadius) / (maxRadius - minRadius); // 归一化到0~1
+    const colorC = new THREE.Color(0x3366ff);
+    const t = (radius - minRadius) / (maxRadius - minRadius);
     let color;
     if (t < 0.5) {
       color = colorA.clone().lerp(colorB, t * 2);

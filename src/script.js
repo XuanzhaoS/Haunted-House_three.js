@@ -7,7 +7,7 @@ import { bgm } from "./HauntedHouseLand/scene/bgm.js";
 import { EXRLoader } from "three/examples/jsm/loaders/EXRLoader.js";
 import gsap from "gsap";
 import { HauntedHouseLand } from "./HauntedHouseLand/hauntedHouseLand.js";
-import { CarnivalLand } from "./AbandonedCarnivalLand/environment.js";
+import { CarnivalLand } from "./AbandonedCarnivalLand/carnivalLand.js";
 import { addParticlesToScene } from "./ui/particles.js";
 import { setupGhostGame } from "./HauntedHouseLand/game/ghostGame.js";
 import {
@@ -81,7 +81,7 @@ addLightsToScene(scene, gui);
 const hauntedHouseLand = new HauntedHouseLand(world);
 hauntedHouseLand.group.name = "hauntedHouse";
 
-const carnivalLand = new CarnivalLand();
+const carnivalLand = new CarnivalLand(world);
 carnivalLand.group.name = "carnival";
 
 hauntedHouseLand.addToScene(scene);
@@ -91,7 +91,7 @@ carnivalLand.addToScene(scene);
 const starField = addParticlesToScene(scene);
 
 // Add welcome text to the main scene
-addWelcomTextToScene(scene, camera);
+addWelcomTextToScene(scene, camera, hauntedHouseLand, carnivalLand);
 
 // lands position
 hauntedHouseLand.group.position.set(-20, 0, 0);
