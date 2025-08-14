@@ -4,6 +4,7 @@ import { addCarouselToScene } from "./scene/carousel";
 import { addFerrisWheelToScene } from "./scene/ferrisWheel";
 import { addCarnivalLightingToGroup } from "./lights/lighting";
 import { CarnivalGame } from "./game/carnivalGame";
+import { FireworksSystem } from "./scene/fireworks";
 
 export class CarnivalLand {
   constructor(world, renderer) {
@@ -23,6 +24,10 @@ export class CarnivalLand {
     // ferris wheel
     this.objects.ferrisWheelInfo = addFerrisWheelToScene(this.group, world);
 
+    // fireworks system
+    this.fireworks = new FireworksSystem();
+    this.fireworks.addToScene(this.group); 
+
     // start the game
     this.game.startGame();
   }
@@ -40,10 +45,29 @@ export class CarnivalLand {
       );
   }
 
+  //  activate fireworks system
+  activateFireworks(time) {
+    if (this.fireworks) {
+      this.fireworks.activate(time);
+    }
+  }
+
+  // deactivate fireworks system
+  deactivateFireworks() {
+    if (this.fireworks) {
+      this.fireworks.deactivate();
+    }
+  }
+
   update(elapsedTime, deltaTime) {
     // update ferris wheel rotation
     if (this.objects.ferrisWheelInfo && this.objects.ferrisWheelInfo.mixer) {
       this.objects.ferrisWheelInfo.mixer.update(deltaTime);
+    }
+
+    // update fireworks (only update when active)
+    if (this.fireworks) {
+      this.fireworks.update(elapsedTime);
     }
 
     // update game

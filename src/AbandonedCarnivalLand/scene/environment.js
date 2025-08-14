@@ -5,7 +5,7 @@ import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 export function addEnvironmentToGroup(group, world, renderer) {
   // Floor
   const floor = new THREE.Mesh(
-    new THREE.PlaneGeometry(30, 30),
+    new THREE.PlaneGeometry(20, 20), 
     new THREE.MeshStandardMaterial({
       color: 0x4444aa,
       side: THREE.DoubleSide,

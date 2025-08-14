@@ -7,7 +7,8 @@ export function addFerrisWheelToScene(group, world) {
     new THREE.TorusGeometry(4, 0.15, 16, 100),
     new THREE.MeshStandardMaterial({ color: 0xffffff })
   );
-  ferrisWheel.position.set(8, 4, -5);
+
+  ferrisWheel.position.set(6, 4, -4);
   ferrisWheel.rotation.x = Math.PI / 2;
   ferrisWheel.castShadow = true;
   ferrisWheel.receiveShadow = true;
@@ -17,7 +18,7 @@ export function addFerrisWheelToScene(group, world) {
   const ferrisWheelBody = new CANNON.Body({
     mass: 0,
     shape: ferrisWheelShape,
-    position: new CANNON.Vec3(8, 4, -5),
+    position: new CANNON.Vec3(6, 4, -4), 
   });
   ferrisWheelBody.quaternion.setFromEuler(0, 0, Math.PI / 2);
   world.addBody(ferrisWheelBody);

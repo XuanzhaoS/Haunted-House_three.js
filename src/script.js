@@ -152,6 +152,15 @@ function focusOnLand(landGroup) {
   controls.minDistance = 1;
   controls.maxDistance = 10;
   controls.enablePan = false;
+
+  // if focus on carnival scene, activate fireworks
+  if (landGroup.name === "carnival") {
+    const currentTime = clock.getElapsedTime();
+    carnivalLand.activateFireworks(currentTime);
+  } else {
+    // if focus on other scene, deactivate fireworks
+    carnivalLand.deactivateFireworks();
+  }
 }
 
 // Resize handler
