@@ -8,21 +8,21 @@ export function addFerrisWheelToScene(group, world) {
   console.log("Loading 3D ferris wheel model...");
 
   gltfLoader.load(
-    "/carnivalLand/ferrisWheel.glb", 
+    "/carnivalLand/ferrisWheel.glb",
     (gltf) => {
       console.log("3D Ferris wheel loaded successfully!");
 
       const ferrisWheel = gltf.scene;
 
       // set location
-      ferrisWheel.position.set(6, 0, -4); 
+      ferrisWheel.position.set(6, 0, -4);
 
-      ferrisWheel.rotation.x = 0; 
-      ferrisWheel.rotation.y = -Math.PI / 4; 
-      ferrisWheel.rotation.z = 0; 
+      ferrisWheel.rotation.x = Math.PI / 3;
+      ferrisWheel.rotation.y = -Math.PI / 4;
+      ferrisWheel.rotation.z = Math.PI / 6;
 
       // size
-      ferrisWheel.scale.set(0.15, 0.15, 0.15);
+      ferrisWheel.scale.set(0.12, 0.12, 0.12);
 
       ferrisWheel.traverse((child) => {
         if (child.isMesh) {
@@ -38,12 +38,12 @@ export function addFerrisWheelToScene(group, world) {
 
       group.add(ferrisWheel);
 
-      // physic 
+      // physic
       const ferrisWheelShape = new CANNON.Cylinder(4, 4, 0.15, 16);
       const ferrisWheelBody = new CANNON.Body({
         mass: 0,
         shape: ferrisWheelShape,
-        position: new CANNON.Vec3(6, 0, -4), 
+        position: new CANNON.Vec3(6, 0, -4),
       });
       ferrisWheelBody.quaternion.setFromEuler(0, 0, Math.PI / 2);
       world.addBody(ferrisWheelBody);
@@ -66,13 +66,12 @@ export function addFerrisWheelToScene(group, world) {
 
 // backup simple ferrisWheel
 function createFallbackFerrisWheel(group, world) {
-
   const ferrisWheel = new THREE.Mesh(
     new THREE.TorusGeometry(4, 0.15, 16, 100),
     new THREE.MeshStandardMaterial({ color: 0xffffff })
   );
 
-  ferrisWheel.position.set(6, 0, -4); 
+  ferrisWheel.position.set(6, 0, -4);
   ferrisWheel.rotation.x = Math.PI / 2;
   ferrisWheel.castShadow = true;
   ferrisWheel.receiveShadow = true;

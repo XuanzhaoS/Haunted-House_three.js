@@ -1,7 +1,9 @@
 import * as THREE from "three";
-import { addEnvironmentToGroup } from "./scene/environment";
-import { addCarouselToScene } from "./scene/carousel";
-import { addFerrisWheelToScene } from "./scene/ferrisWheel";
+import * as CANNON from "cannon-es";
+import { addEnvironmentToGroup } from "./scene/environment.js";
+import { addFerrisWheelToScene } from "./scene/ferrisWheel.js";
+import { addCarouselToScene } from "./scene/carousel.js";
+import { addTreesToScene } from "./scene/trees/treeSystem.js";
 import { addCarnivalLightingToGroup } from "./lights/lighting";
 import { CarnivalGame } from "./game/carnivalGame";
 import { FireworksSystem } from "./scene/fireworks";
@@ -11,6 +13,7 @@ export class CarnivalLand {
     this.group = new THREE.Group();
     this.objects = {};
     this.game = new CarnivalGame();
+    this.world = world;
 
     // environment and floor
     addEnvironmentToGroup(this.group, world, renderer);
@@ -26,7 +29,10 @@ export class CarnivalLand {
 
     // fireworks system
     this.fireworks = new FireworksSystem();
-    this.fireworks.addToScene(this.group); 
+    this.fireworks.addToScene(this.group);
+
+    // tree
+    addTreesToScene(this.group, world);
 
     // start the game
     this.game.startGame();

@@ -88,12 +88,13 @@ function addBench(group, gltfLoader) {
     (gltf) => {
       const bench = gltf.scene;
 
-      bench.scale.set(0.8, 0.8, 0.8);
+      bench.scale.set(0.6, 0.6, 0.6);
 
-      bench.position.set(-8, 0.5, -0.5);
+      bench.position.set(-8, 0.3, -0.5);
 
       bench.rotation.x = 0;
       bench.rotation.y = Math.PI / 2 + Math.PI / 7.2;
+      bench.rotation.z = 0;
 
       let meshCount = 0;
       bench.traverse((child) => {
@@ -111,10 +112,6 @@ function addBench(group, gltfLoader) {
           if (child.material) {
             child.material.transparent = false;
             child.material.opacity = 1.0;
-
-            child.material.color = new THREE.Color(0xff0000);
-            child.material.emissive = new THREE.Color(0x333333);
-
             child.material.roughness = 0.8;
             child.material.metalness = 0.1;
 
@@ -130,6 +127,33 @@ function addBench(group, gltfLoader) {
       console.log(`Total bench meshes: ${meshCount}`);
 
       group.add(bench);
+
+      const bench2 = gltf.scene.clone();
+
+      bench2.position.set(-8.3, 0.3, 1.3); // X轴-10（更左），Z轴-2（更前），Y轴保持一致(-8, 0.3, -0.5);
+
+      bench2.rotation.x = 0;
+      bench2.rotation.y = Math.PI / 2 + Math.PI / 7.2;
+      bench2.rotation.z = 0;
+
+      bench2.scale.set(0.6, 0.6, 0.6);
+
+      bench2.traverse((child) => {
+        if (child.isMesh) {
+          child.castShadow = true;
+          child.receiveShadow = true;
+
+          if (child.material) {
+            child.material.transparent = false;
+            child.material.opacity = 1.0;
+            child.material.roughness = 0.8;
+            child.material.metalness = 0.1;
+          }
+        }
+      });
+
+      group.add(bench2);
+      console.log("Second bench added at position (-10, 0.3, -2)");
     },
     (progress) => {
       const percent = (progress.loaded / progress.total) * 100;
@@ -150,7 +174,7 @@ function createSimpleBench(group) {
 
   const benchGeometry = new THREE.BoxGeometry(2, 0.3, 0.8);
   const benchMaterial = new THREE.MeshStandardMaterial({
-    color: 0x8b4513, // 棕色
+    color: 0x8b4513,
     roughness: 0.8,
     metalness: 0.1,
   });

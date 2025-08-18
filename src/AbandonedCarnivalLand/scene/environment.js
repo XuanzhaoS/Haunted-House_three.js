@@ -126,55 +126,41 @@ function addStreetLamps(group) {
   });
 }
 
-// 创建破旧的材质效果
 function createRustyMaterial(material, lampIndex) {
-  // 保存原始材质属性
   const originalColor = material.color
     ? material.color.clone()
     : new THREE.Color(0x888888);
 
-  // 创建破旧效果
   if (material.isMeshStandardMaterial) {
-    // 增加粗糙度，模拟磨损
     material.roughness = 0.9;
-
-    // 降低金属度，模拟生锈
     material.metalness = 0.1;
 
-    // 添加生锈颜色变化
     const rustColors = [
-      0x8b4513, // 棕色生锈
-      0xa0522d, // 深棕色生锈
-      0xcd853f, // 浅棕色生锈
-      0xd2691e, // 橙棕色生锈
+      0x8b4513, 
+      0xa0522d, 
+      0xcd853f, 
+      0xd2691e, 
     ];
 
-    // 每个路灯使用不同的生锈颜色
     const rustColor = rustColors[lampIndex % rustColors.length];
 
-    // 混合原始颜色和生锈颜色
     material.color = new THREE.Color().lerpColors(
       originalColor,
       new THREE.Color(rustColor),
       0.6
     );
 
-    // 添加一些随机变化
     material.color.offsetHSL(0, 0, (Math.random() - 0.5) * 0.2);
 
-    // 创建噪波纹理来模拟表面不平整
     const noiseTexture = createNoiseTexture();
     material.normalMap = noiseTexture;
     material.normalScale.set(0.1, 0.1);
 
-    // 调整环境光遮蔽
     material.aoIntensity = 1.5;
 
-    // 添加一些透明度变化
     material.transparent = true;
     material.opacity = 0.9 + Math.random() * 0.1;
   } else if (material.isMeshBasicMaterial) {
-    // 如果是基础材质，转换为标准材质
     const newMaterial = new THREE.MeshStandardMaterial({
       color: material.color,
       roughness: 0.9,
@@ -182,13 +168,10 @@ function createRustyMaterial(material, lampIndex) {
       transparent: true,
       opacity: 0.9,
     });
-
-    // 替换材质
     material = newMaterial;
   }
 }
 
-// 创建噪波纹理
 function createNoiseTexture() {
   const canvas = document.createElement("canvas");
   canvas.width = 64;
