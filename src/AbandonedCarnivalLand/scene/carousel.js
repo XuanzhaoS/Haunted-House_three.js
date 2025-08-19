@@ -5,8 +5,6 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 export function addCarouselToScene(group, world) {
   const gltfLoader = new GLTFLoader();
 
-  console.log("Loading 3D carousel model...");
-
   const tempMixer = {
     update: (deltaTime) => {},
   };
@@ -20,8 +18,6 @@ export function addCarouselToScene(group, world) {
   gltfLoader.load(
     "/carnivalLand/carousel.glb",
     (gltf) => {
-      console.log("3D Carousel loaded successfully!");
-
       const carousel = gltf.scene;
 
       carousel.position.set(-4, -0.5, -3);
@@ -59,13 +55,9 @@ export function addCarouselToScene(group, world) {
 
     (progress) => {
       const percent = (progress.loaded / progress.total) * 100;
-      console.log(`Loading carousel: ${percent.toFixed(1)}%`);
     },
 
     (error) => {
-      console.error("Error loading 3D carousel:", error);
-      console.error("Error details:", error.message);
-
       const fallbackInfo = createFallbackCarousel(group, world);
 
       carouselInfo.carousel = fallbackInfo.carousel;
@@ -81,8 +73,6 @@ export function addCarouselToScene(group, world) {
 
 // Add bench
 function addBench(group, gltfLoader) {
-  console.log("Loading bench...");
-
   gltfLoader.load(
     "/carnivalLand/bench.glb",
     (gltf) => {
@@ -98,14 +88,10 @@ function addBench(group, gltfLoader) {
 
       let meshCount = 0;
       bench.traverse((child) => {
-        console.log("Bench child:", child.type, child.name);
-
+        
         if (child.isMesh) {
           meshCount++;
-          console.log(`Bench mesh ${meshCount}:`, child.name);
-          console.log("Mesh geometry:", child.geometry);
-          console.log("Mesh material:", child.material);
-
+          
           child.castShadow = true;
           child.receiveShadow = true;
 
@@ -115,16 +101,11 @@ function addBench(group, gltfLoader) {
             child.material.roughness = 0.8;
             child.material.metalness = 0.1;
 
-            console.log(
-              `Mesh ${meshCount} material updated with forced red color`
-            );
           } else {
             console.warn(`Mesh ${meshCount} has no material!`);
           }
         }
       });
-
-      console.log(`Total bench meshes: ${meshCount}`);
 
       group.add(bench);
 
@@ -153,24 +134,17 @@ function addBench(group, gltfLoader) {
       });
 
       group.add(bench2);
-      console.log("Second bench added at position (-10, 0.3, -2)");
     },
     (progress) => {
       const percent = (progress.loaded / progress.total) * 100;
-      console.log(`Loading bench: ${percent.toFixed(1)}%`);
     },
     (error) => {
-      console.error(" Error loading bench:", error);
-      console.error("Error details:", error.message);
-
-      console.log("Creating simple fallback bench...");
       createSimpleBench(group);
     }
   );
 }
 
 function createSimpleBench(group) {
-  console.log("Creating simple fallback bench");
 
   const benchGeometry = new THREE.BoxGeometry(2, 0.3, 0.8);
   const benchMaterial = new THREE.MeshStandardMaterial({
@@ -189,7 +163,6 @@ function createSimpleBench(group) {
 }
 
 function createFallbackCarousel(group, world) {
-  console.log("Creating fallback carousel");
 
   const carousel = new THREE.Mesh(
     new THREE.CylinderGeometry(2, 2, 0.3, 32),

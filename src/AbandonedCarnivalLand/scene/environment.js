@@ -69,7 +69,6 @@ export function addEnvironmentToGroup(group, world, renderer) {
 
 // street lamp
 function addStreetLamps(group) {
-  console.log("=== Adding street lamps ===");
 
   const gltfLoader = new GLTFLoader();
 
@@ -82,14 +81,10 @@ function addStreetLamps(group) {
   ];
 
   lampPositions.forEach((pos, index) => {
-    console.log(
-      `Loading street lamp ${index + 1} from: /carnivalLand/streetLamp.glb`
-    );
 
     gltfLoader.load(
       "/carnivalLand/streetLamp.glb",
       (gltf) => {
-        console.log(`Street lamp ${index + 1} loaded successfully!`);
 
         const streetLamp = gltf.scene;
 
@@ -115,18 +110,13 @@ function addStreetLamps(group) {
         });
 
         group.add(streetLamp);
-        console.log(
-          `Street lamp ${index + 1} added at position (${pos.x}, -1, ${pos.z})`
-        );
 
-        // 为前3个路灯添加灯光（原先只对 index === 0）
         if (index === 0 || index === 1 || index === 2) {
           addLampLight(group, pos.x, pos.z);
         }
       },
       (progress) => {
         const percent = (progress.loaded / progress.total) * 100;
-        console.log(`Loading street lamp ${index + 1}: ${percent.toFixed(1)}%`);
       },
       (error) => {
         console.error(`Error loading street lamp ${index + 1}:`, error);
@@ -135,7 +125,6 @@ function addStreetLamps(group) {
   });
 }
 
-// 添加街灯光源
 function addLampLight(group, x, z) {
   const lampLight = new THREE.PointLight("#ff7d46", 1, 7);
   lampLight.position.set(x, 5, z);

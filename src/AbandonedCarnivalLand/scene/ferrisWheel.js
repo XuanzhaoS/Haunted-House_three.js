@@ -5,13 +5,9 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 export function addFerrisWheelToScene(group, world) {
   const gltfLoader = new GLTFLoader();
 
-  console.log("Loading 3D ferris wheel model...");
-
   gltfLoader.load(
     "/carnivalLand/ferrisWheel.glb",
     (gltf) => {
-      console.log("3D Ferris wheel loaded successfully!");
-
       const ferrisWheel = gltf.scene;
 
       // set location
@@ -47,8 +43,6 @@ export function addFerrisWheelToScene(group, world) {
       });
       ferrisWheelBody.quaternion.setFromEuler(0, 0, Math.PI / 2);
       world.addBody(ferrisWheelBody);
-
-      console.log("3D Ferris wheel added to scene with physics");
     },
 
     (progress) => {
@@ -57,8 +51,6 @@ export function addFerrisWheelToScene(group, world) {
 
     (error) => {
       console.error("Error loading 3D ferris wheel:", error);
-      console.error("Error details:", error.message);
-
       createFallbackFerrisWheel(group, world);
     }
   );

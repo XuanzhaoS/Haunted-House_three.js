@@ -163,14 +163,12 @@ export class FireworksSystem {
     this.activationTime = time;
     this.lastExplosion = time; // start first explosion immediately
     this.material.uniforms.isActive.value = 1.0;
-    console.log("Fireworks activated! Carnival is starting!");
   }
 
   // deactivate fireworks system
   deactivate() {
     this.isActive = false;
     this.material.uniforms.isActive.value = 0.0;
-    console.log("Fireworks deactivated.");
   }
 
   update(time) {
@@ -196,10 +194,5 @@ export class FireworksSystem {
     const z = (Math.random() - 0.5) * 20;
 
     this.particleSystem.position.set(x, y, z);
-    console.log(
-      `Firework explosion at (${x.toFixed(1)}, ${y.toFixed(1)}, ${z.toFixed(
-        1
-      )})`
-    );
   }
 }

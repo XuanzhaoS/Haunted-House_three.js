@@ -45,7 +45,20 @@ export class CarnivalLand {
     addCircleToScene(this.group, world);
 
     // props(game items)
-    this.objects.props = addPropsToScene(this.group, world)
+    addPropsToScene(this.group, world).then((props) => {
+      this.objects.hat = props.hat;
+    });
+
+    // Add eventListener
+    this.hatSpeed = 0.1;
+    this.keys = {};
+    window.addEventListener("keydown", (e) => {
+      this.keys[e.key.toLowerCase()] = true;
+    });
+
+    window.addEventListener("keyup", (e) => {
+      this.keys[e.key.toLowerCase()] = false;
+    });
 
     // fireworks system
     this.fireworks = new FireworksSystem();
@@ -94,6 +107,69 @@ export class CarnivalLand {
     // update fireworks (only update when active)
     if (this.fireworks) {
       this.fireworks.update(elapsedTime);
+    }
+
+    // hat physics
+    if (this.objects.hat && this.objects.hat.userData.body) {
+      const body = this.objects.hat.userData.body;
+      body.position.set(
+        this.objects.hat.position.x,
+        this.objects.hat.position.y,
+        this.objects.hat.position.z
+      );
+    }
+
+    // update hat game
+    if (this.objects.hat) {
+      const hat = this.objects.hat;
+
+      // keyboard moving
+      if (this.keys["arrowup"] || this.keys["w"]) {
+        hat.position.z -= this.hatSpeed;
+      }
+      if (this.keys["arrowdown"] || this.keys["s"]) {
+        hat.position.z += this.hatSpeed;
+      }
+      if (this.keys["arrowleft"] || this.keys["a"]) {
+        hat.position.x -= this.hatSpeed;
+      }
+      if (this.keys["arrowright"] || this.keys["d"]) {
+        hat.position.x += this.hatSpeed;
+      }
+
+      // circle entrace check
+      const circleCenter = new THREE.Vector3(-1, 0, 6); // circle.position
+      const dx = hat.position.x - circleCenter.x;
+      const dz = hat.position.z - circleCenter.z;
+      const r = Math.sqrt(dx * dx + dz * dz);
+      let angle = Math.atan2(dz, dx);
+      if (angle < 0) angle += 2 * Math.PI;
+
+      // circle gap
+      const gapStart = THREE.MathUtils.degToRad(320); 
+      const gapEnd = THREE.MathUtils.degToRad(360); 
+
+      const inGap =
+        angle >= gapStart && angle <= gapEnd && r >= 1.3 && r <= 1.7;
+
+      if (!inGap && r >= 1.3 && r <= 1.7) {
+        // 不在空缺处，推回到圆环外
+        hat.position.x = circleCenter.x + Math.cos(angle) * 2;
+        hat.position.z = circleCenter.z + Math.sin(angle) * 2;
+      } else if (inGap) {
+        // 在空缺处，显示 popup（只触发一次）
+        if (!hat.userData.enteredGap) {
+          hat.userData.enteredGap = true;
+          const msg = document.getElementById("successMsg");
+          if (msg) {
+            msg.style.display = "block";
+            setTimeout(() => {
+              msg.style.display = "none";
+            }, 2000);
+          }
+          console.log("Hat entered gap!");
+        }
+      }
     }
 
     // update game
