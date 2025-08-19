@@ -20,7 +20,7 @@ export function addCircusToScene(group, world) {
       circusTent.rotation.x = 0;
       circusTent.rotation.y = Math.PI / 2; 
       circusTent.rotation.z = 0;
-      circusTent.scale.set(0.03, 0.04, 0.03);
+      circusTent.scale.set(0.35, 0.4, 0.35);
 
       let meshCount = 0;
       circusTent.traverse((child) => {

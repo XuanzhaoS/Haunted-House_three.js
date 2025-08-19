@@ -10,7 +10,8 @@ import { CarnivalGame } from "./game/carnivalGame";
 import { FireworksSystem } from "./scene/fireworks";
 import { addCircusToScene } from "./scene/circus.js";
 import { addSmallBoothToScene } from "./scene/smallBooth.js";
-import { addCircleToScene } from "./scene/circle.js";
+import { addCircleToScene } from "./game/props/circle.js";
+import { addPropsToScene } from "./game/props/index.js";
 
 export class CarnivalLand {
   constructor(world, renderer) {
@@ -42,6 +43,9 @@ export class CarnivalLand {
 
     // circle
     addCircleToScene(this.group, world);
+
+    // props(game items)
+    this.objects.props = addPropsToScene(this.group, world)
 
     // fireworks system
     this.fireworks = new FireworksSystem();
