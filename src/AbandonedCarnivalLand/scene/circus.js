@@ -8,19 +8,17 @@ export function addCircusToScene(group, world) {
   gltfLoader.load(
     "/carnivalLand/circusTent.glb",
     (gltf) => {
-
       const circusTent = gltf.scene;
 
       circusTent.position.set(4.5, 0, 3);
 
       circusTent.rotation.x = 0;
-      circusTent.rotation.y = Math.PI / 2; 
+      circusTent.rotation.y = Math.PI / 2;
       circusTent.rotation.z = 0;
       circusTent.scale.set(0.35, 0.4, 0.35);
 
       let meshCount = 0;
       circusTent.traverse((child) => {
-
         if (child.isMesh) {
           meshCount++;
 
@@ -55,10 +53,9 @@ export function addCircusToScene(group, world) {
 }
 
 function createFallbackCircusTent(group, world) {
-
   const tentGeometry = new THREE.ConeGeometry(3, 4, 8);
   const tentMaterial = new THREE.MeshStandardMaterial({
-    color: 0xff6b6b, 
+    color: 0xff6b6b,
     roughness: 0.8,
     metalness: 0.1,
   });

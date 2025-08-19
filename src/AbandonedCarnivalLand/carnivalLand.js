@@ -109,6 +109,16 @@ export class CarnivalLand {
       this.fireworks.update(elapsedTime);
     }
 
+    // circusTent lightString flicker
+    if (this.group.userData && this.group.userData.lightString) {
+      const lightString = this.group.userData.lightString;
+      lightString.traverse((child) => {
+        if (child.isMesh && child.material && child.material.emissive) {
+          child.material.emissiveIntensity = 0.3 + Math.random() * 0.7;
+        }
+      });
+    }
+
     // hat physics
     if (this.objects.hat && this.objects.hat.userData.body) {
       const body = this.objects.hat.userData.body;
@@ -146,18 +156,16 @@ export class CarnivalLand {
       if (angle < 0) angle += 2 * Math.PI;
 
       // circle gap
-      const gapStart = THREE.MathUtils.degToRad(320); 
-      const gapEnd = THREE.MathUtils.degToRad(360); 
+      const gapStart = THREE.MathUtils.degToRad(320);
+      const gapEnd = THREE.MathUtils.degToRad(360);
 
       const inGap =
         angle >= gapStart && angle <= gapEnd && r >= 1.3 && r <= 1.7;
 
       if (!inGap && r >= 1.3 && r <= 1.7) {
-        // 不在空缺处，推回到圆环外
         hat.position.x = circleCenter.x + Math.cos(angle) * 2;
         hat.position.z = circleCenter.z + Math.sin(angle) * 2;
       } else if (inGap) {
-        // 在空缺处，显示 popup（只触发一次）
         if (!hat.userData.enteredGap) {
           hat.userData.enteredGap = true;
           const msg = document.getElementById("successMsg");

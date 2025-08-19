@@ -134,8 +134,7 @@ function addLampLight(group, x, z) {
   lampLight.shadow.mapSize.height = 128;
   lampLight.shadow.camera.far = 7;
   
-  // 只对重要物体投射阴影
-  lampLight.shadow.autoUpdate = false; // 手动更新阴影
+  lampLight.shadow.autoUpdate = false; 
   lampLight.shadow.needsUpdate = true;
 
   group.add(lampLight);
