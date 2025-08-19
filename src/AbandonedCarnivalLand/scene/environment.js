@@ -36,8 +36,8 @@ export function addEnvironmentToGroup(group, world, renderer) {
       aoMap: grassAmbientOcclusionTexture,
       normalMap: grassNormalTexture,
       roughnessMap: grassRoughnessTexture,
-      roughness: 1.0, 
-      metalness: 0.1, 
+      roughness: 1.0,
+      metalness: 0.1,
     })
   );
 
@@ -55,7 +55,7 @@ export function addEnvironmentToGroup(group, world, renderer) {
     mass: 0,
     shape: floorShape,
     material: new CANNON.Material({
-      friction: 0.8, 
+      friction: 0.8,
       restitution: 0.1,
     }),
   });
@@ -75,9 +75,9 @@ function addStreetLamps(group) {
 
   // location
   const lampPositions = [
-    { x: -9, z: -9, rotation: 0 }, 
-    { x: 9, z: -9, rotation: Math.PI / 2 }, 
-    { x: -9, z: 9, rotation: -Math.PI / 2 }, 
+    { x: -9, z: -9, rotation: 0 },
+    { x: 9, z: -9, rotation: Math.PI / 2 },
+    { x: -9, z: 9, rotation: -Math.PI / 2 },
     { x: 9, z: 9, rotation: Math.PI },
   ];
 
@@ -89,14 +89,16 @@ function addStreetLamps(group) {
     gltfLoader.load(
       "/carnivalLand/streetLamp.glb",
       (gltf) => {
-        console.log(`✅ Street lamp ${index + 1} loaded successfully!`);
+        console.log(`Street lamp ${index + 1} loaded successfully!`);
 
         const streetLamp = gltf.scene;
 
         // location
         streetLamp.position.set(pos.x, -1, pos.z);
 
+        streetLamp.rotation.x = 0;
         streetLamp.rotation.y = pos.rotation;
+        streetLamp.rotation.z = 0;
 
         streetLamp.scale.set(0.8, 0.8, 0.8);
 
@@ -106,24 +108,55 @@ function addStreetLamps(group) {
             child.receiveShadow = true;
 
             if (child.material) {
-              createRustyMaterial(child.material, index);
+              child.material.roughness = 0.9;
+              child.material.metalness = 0.1;
             }
           }
         });
 
         group.add(streetLamp);
+        console.log(
+          `Street lamp ${index + 1} added at position (${pos.x}, -1, ${pos.z})`
+        );
+
+        // 为前3个路灯添加灯光（原先只对 index === 0）
+        if (index === 0 || index === 1 || index === 2) {
+          addLampLight(group, pos.x, pos.z);
+        }
       },
-      
       (progress) => {
         const percent = (progress.loaded / progress.total) * 100;
+        console.log(`Loading street lamp ${index + 1}: ${percent.toFixed(1)}%`);
       },
-     
       (error) => {
         console.error(`Error loading street lamp ${index + 1}:`, error);
-        console.error("Error details:", error.message);
       }
     );
   });
+}
+
+// 添加街灯光源
+function addLampLight(group, x, z) {
+  const lampLight = new THREE.PointLight("#ff7d46", 1, 7);
+  lampLight.position.set(x, 5, z);
+
+  lampLight.castShadow = true;
+  lampLight.shadow.mapSize.width = 128;
+  lampLight.shadow.mapSize.height = 128;
+  lampLight.shadow.camera.far = 7;
+  
+  // 只对重要物体投射阴影
+  lampLight.shadow.autoUpdate = false; // 手动更新阴影
+  lampLight.shadow.needsUpdate = true;
+
+  group.add(lampLight);
+
+  const bulb = new THREE.Mesh(
+    new THREE.SphereGeometry(0.12, 12, 8),
+    new THREE.MeshBasicMaterial({ color: "#ff7d46" })
+  );
+  bulb.position.set(x, 5, z);
+  group.add(bulb);
 }
 
 function createRustyMaterial(material, lampIndex) {
@@ -135,12 +168,7 @@ function createRustyMaterial(material, lampIndex) {
     material.roughness = 0.9;
     material.metalness = 0.1;
 
-    const rustColors = [
-      0x8b4513, 
-      0xa0522d, 
-      0xcd853f, 
-      0xd2691e, 
-    ];
+    const rustColors = [0x8b4513, 0xa0522d, 0xcd853f, 0xd2691e];
 
     const rustColor = rustColors[lampIndex % rustColors.length];
 

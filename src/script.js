@@ -209,6 +209,29 @@ setupGhostGame(camera, renderer);
 // Animation
 const clock = new THREE.Clock();
 
+// add ESC eventListener
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    console.log("ESC pressed - returning to main screen");
+    returnToMainScreen();
+  }
+});
+
+// back to main screen
+function returnToMainScreen() {
+  console.log("Returning to main screen...");
+
+  camera.position.set(0, 15, 60);
+  controls.target.set(0, 0, 0);
+  controls.update();
+
+  controls.enablePan = true;
+  controls.enableZoom = true;
+  controls.enableRotate = true;
+
+  console.log("Returned to main screen");
+}
+
 function tick() {
   if (skySphere) {
     skySphere.position.copy(camera.position);

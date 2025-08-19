@@ -3,10 +3,14 @@ import * as CANNON from "cannon-es";
 import { addEnvironmentToGroup } from "./scene/environment.js";
 import { addFerrisWheelToScene } from "./scene/ferrisWheel.js";
 import { addCarouselToScene } from "./scene/carousel.js";
-import { addTreesToScene } from "./scene/trees/treeSystem.js";
+import { addTicketBoothToScene } from "./scene/ticketBooth.js";
+import { addTreesToScene } from "./scene/treeSystem.js";
 import { addCarnivalLightingToGroup } from "./lights/lighting";
 import { CarnivalGame } from "./game/carnivalGame";
 import { FireworksSystem } from "./scene/fireworks";
+import { addCircusToScene } from "./scene/circus.js";
+import { addSmallBoothToScene } from "./scene/smallBooth.js";
+import { addCircleToScene } from "./scene/circle.js";
 
 export class CarnivalLand {
   constructor(world, renderer) {
@@ -26,6 +30,18 @@ export class CarnivalLand {
 
     // ferris wheel
     this.objects.ferrisWheelInfo = addFerrisWheelToScene(this.group, world);
+
+    // ticket booth
+    addTicketBoothToScene(this.group, world);
+
+    // circus tent
+    addCircusToScene(this.group, world);
+
+    // small booth
+    addSmallBoothToScene(this.group, world);
+
+    // circle
+    addCircleToScene(this.group, world);
 
     // fireworks system
     this.fireworks = new FireworksSystem();
