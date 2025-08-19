@@ -88,10 +88,9 @@ function addBench(group, gltfLoader) {
 
       let meshCount = 0;
       bench.traverse((child) => {
-        
         if (child.isMesh) {
           meshCount++;
-          
+
           child.castShadow = true;
           child.receiveShadow = true;
 
@@ -100,7 +99,6 @@ function addBench(group, gltfLoader) {
             child.material.opacity = 1.0;
             child.material.roughness = 0.8;
             child.material.metalness = 0.1;
-
           } else {
             console.warn(`Mesh ${meshCount} has no material!`);
           }
@@ -111,7 +109,7 @@ function addBench(group, gltfLoader) {
 
       const bench2 = gltf.scene.clone();
 
-      bench2.position.set(-8.3, 0.3, 1.3); // X轴-10（更左），Z轴-2（更前），Y轴保持一致(-8, 0.3, -0.5);
+      bench2.position.set(-8.3, 0.3, 1.3);
 
       bench2.rotation.x = 0;
       bench2.rotation.y = Math.PI / 2 + Math.PI / 7.2;
@@ -134,6 +132,27 @@ function addBench(group, gltfLoader) {
       });
 
       group.add(bench2);
+
+      // Add Light
+      gltfLoader.load(
+        "/carnivalLand/lightString.glb",
+        (gltf) => {
+          const lightString = gltf.scene;
+          lightString.scale.set(0.1, 0.1, 0.1);
+
+          lightString.position.set(-8.3, 0.1, 0.3);
+
+          group.add(lightString);
+          
+        },
+        (progress) => {
+          const percent = (progress.loaded / progress.total) * 100;
+          console.log(`lightString loading: ${percent.toFixed(1)}%`);
+        },
+        (error) => {
+          console.error("Error loading lightString:", error);
+        }
+      );
     },
     (progress) => {
       const percent = (progress.loaded / progress.total) * 100;
@@ -145,7 +164,6 @@ function addBench(group, gltfLoader) {
 }
 
 function createSimpleBench(group) {
-
   const benchGeometry = new THREE.BoxGeometry(2, 0.3, 0.8);
   const benchMaterial = new THREE.MeshStandardMaterial({
     color: 0x8b4513,
@@ -163,7 +181,6 @@ function createSimpleBench(group) {
 }
 
 function createFallbackCarousel(group, world) {
-
   const carousel = new THREE.Mesh(
     new THREE.CylinderGeometry(2, 2, 0.3, 32),
     new THREE.MeshStandardMaterial({ color: 0xffcc00 })
